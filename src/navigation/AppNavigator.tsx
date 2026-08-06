@@ -4,7 +4,8 @@ import MainTabNavigator from './MainTabNavigator';
 import UserTabNavigator from './UserTabNavigator';
 import TrainerTabNavigator from './TrainerTabNavigator';
 import { RootStackParamList } from '../types/RootStackParamList';
-// import LoginScreen from '@/features/auth/screens/LoginScreen';
+import LoginScreen from '../auth/login/screens/LoginScreen';
+import RegisterScreen from '../auth/register/screens/RegisterScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -17,9 +18,9 @@ export default function AppNavigator() {
                               headerShown: false,
                         }}
                   >
-                        {/* <Stack.Screen name="Splash" component={SplashScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} /> */}
+                        {/* <Stack.Screen name="Splash" component={SplashScreen} /> */}
+                        <Stack.Screen name="Login" component={LoginScreen} />
+                        <Stack.Screen name="Register" component={RegisterScreen} />
                         <Stack.Screen name="MainTab" component={MainTabNavigator} />
                         <Stack.Screen name="UserTab" component={UserTabNavigator} />
                         <Stack.Screen name="TrainerTab" component={TrainerTabNavigator} />
