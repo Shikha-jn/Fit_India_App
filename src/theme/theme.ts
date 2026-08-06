@@ -36,4 +36,7 @@ export const COLORS = {
 
       // Overlay
       overlay: "rgba(0,0,0,0.65)",
+      gradientStart: "#A61852",
+      gradientMid: "#232329",
+      gradientEnd: "#B68F25",
 };

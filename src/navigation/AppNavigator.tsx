@@ -19,11 +19,11 @@ export default function AppNavigator() {
                         }}
                   >
                         {/* <Stack.Screen name="Splash" component={SplashScreen} /> */}
-                        <Stack.Screen name="Login" component={LoginScreen} />
-                        <Stack.Screen name="Register" component={RegisterScreen} />
                         <Stack.Screen name="MainTab" component={MainTabNavigator} />
                         <Stack.Screen name="UserTab" component={UserTabNavigator} />
                         <Stack.Screen name="TrainerTab" component={TrainerTabNavigator} />
+                        <Stack.Screen name="Login" component={LoginScreen} />
+                        <Stack.Screen name="Register" component={RegisterScreen} />
                   </Stack.Navigator>
             </NavigationContainer>
       );

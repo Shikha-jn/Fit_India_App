@@ -177,12 +177,12 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({
                                                       <Ionicons
                                                             name={iconName}
                                                             size={22}
-                                                            color={isFocused ? COLORS.text : COLORS.textMuted}
+                                                            color={isFocused ? COLORS.gold : COLORS.textMuted}
                                                             style={isFocused ? styles.iconActiveShadow : undefined}
                                                       />
                                                 </Animated.View>
 
-                                                <Text
+                                                {/* <Text
                                                       numberOfLines={1}
                                                       style={[
                                                             styles.label,
@@ -193,7 +193,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({
                                                       ]}
                                                 >
                                                       {label}
-                                                </Text>
+                                                </Text> */}
 
                                                 {isFocused && <View style={styles.activeDot} />}
                                           </Pressable>
@@ -233,6 +233,12 @@ const styles = StyleSheet.create({
             borderWidth: 1,
             borderColor: COLORS.border,
             overflow: 'hidden',
+            borderTopColor: COLORS.goldDark,
+            borderTopWidth: 3,
+            borderEndColor: COLORS.goldDark,
+            borderEndWidth: 3,
+            borderStartColor: COLORS.goldDark,
+            borderStartWidth: 3,
       },
       topHairline: {
             position: 'absolute',

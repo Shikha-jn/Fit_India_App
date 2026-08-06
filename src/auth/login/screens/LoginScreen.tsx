@@ -341,6 +341,12 @@ const styles = StyleSheet.create({
             shadowOpacity: 0.5,
             shadowRadius: 16,
             elevation: 10,
+            borderTopColor: COLORS.goldDark,
+            borderTopWidth: 1.5,
+            borderStartColor: COLORS.goldDark,
+            borderStartWidth: 1.5,
+            borderEndColor: COLORS.goldDark,
+            borderEndWidth: 1.5,
       },
       submitText: {
             color: COLORS.text,

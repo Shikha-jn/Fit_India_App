@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
             top: 4,
             left: 4,
             bottom: 4,
-            backgroundColor: COLORS.text,
+            backgroundColor: COLORS.textSecondary,
             borderRadius: 14,
             shadowColor: COLORS.gold,
             shadowOffset: { width: 0, height: 2 },

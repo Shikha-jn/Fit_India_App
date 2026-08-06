@@ -6,6 +6,7 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { CompositeNavigationProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from '../../types/RootStackParamList';
+import { useAlert } from '../../context/AlertContext';
 
 type ProfileScreenProp = CompositeNavigationProp<
       BottomTabNavigationProp<MainTabParamList, 'Profile'>,
@@ -14,20 +15,13 @@ type ProfileScreenProp = CompositeNavigationProp<
 
 export const ProfileScreen = () => {
       const navigation = useNavigation<ProfileScreenProp>();
+      const alert = useAlert();
       useEffect(() => {
-            Alert.alert(
+            alert.warning(
                   "Login Required",
                   "Please login to continue.",
-                  [
-                        {
-                              text: "OK",
-                              onPress: () => navigation.replace('Login'),
-                        },
-                  ],
-                  {
-                        cancelable: false,
-                  }
             );
+            navigation.navigate('Login');
       }, []);
 
       return (
