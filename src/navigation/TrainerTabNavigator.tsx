@@ -13,9 +13,9 @@ export default function TrainerTabNavigator() {
                   }}
             >
                   <TrainerTabStack.Screen name="Dashboard" component={TrainerDashboard} options={{ tabBarLabel: 'Dashboard' }} />
-                  <TrainerTabStack.Screen name="ClientDirectory" component={HomeScreen} options={{ tabBarLabel: 'Client Directory' }} />
-                  <TrainerTabStack.Screen name="Webinar" component={HomeScreen} options={{ tabBarLabel: 'Webinar' }} />
-                  <TrainerTabStack.Screen name="Profile" component={HomeScreen} options={{ tabBarLabel: 'Profile' }} />
+                  <TrainerTabStack.Screen name="ClientDirectory" component={TrainerDashboard} options={{ tabBarLabel: 'Client Directory' }} />
+                  <TrainerTabStack.Screen name="Webinar" component={TrainerDashboard} options={{ tabBarLabel: 'Webinar' }} />
+                  <TrainerTabStack.Screen name="Profile" component={TrainerDashboard} options={{ tabBarLabel: 'Profile' }} />
             </TrainerTabStack.Navigator>
       );
 }

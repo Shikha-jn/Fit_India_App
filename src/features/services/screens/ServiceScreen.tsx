@@ -5,16 +5,25 @@ import { COLORS } from '../../../theme/theme';
 import ProgramsHeroSection from '../components/ProgramsHeroSection';
 import FlagshipProgramSection from '../components/FlagshipProgramSection';
 import BlueprintsSection from '../components/BluePrintsSection';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { MainTabParamList } from '../../../types/MainTabParamList';
 
-interface ServicesScreenProps {
-      onBookFreeTrial?: () => void;
-      onEnquireBlueprint?: (blueprintId: string) => void;
-}
+type ServicesScreenProp = BottomTabNavigationProp<MainTabParamList, 'Services'>;
 
-const ServicesScreen: React.FC<ServicesScreenProps> = ({
-      onBookFreeTrial,
-      onEnquireBlueprint,
+// interface ServicesScreenProps {
+//       onBookFreeTrial?: () => void;
+//       onEnquireBlueprint?: (blueprintId: string) => void;
+// }
+
+const ServicesScreen: React.FC<ServicesScreenProp> = ({
+
 }) => (
+      const onBookFreeTrial = () => {
+            console.log('Book Free Trial button pressed');
+      }
+      const onEnquireBlueprint = (blueprintId: string) => {
+            console.log(`Enquire about blueprint: ${blueprintId}`);
+      }
       <>
             <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
             <ScrollView

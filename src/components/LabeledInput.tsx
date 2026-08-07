@@ -30,6 +30,7 @@ const LabeledInput: React.FC<LabeledInputProps> = ({
                         ]}
                   >
                         <TextInput
+                              {...rest}
                               placeholderTextColor={COLORS.textMuted}
                               style={[styles.input, style]}
                               onFocus={(e) => {
@@ -40,7 +41,6 @@ const LabeledInput: React.FC<LabeledInputProps> = ({
                                     setFocused(false);
                                     rest.onBlur?.(e);
                               }}
-                              {...rest}
                         />
                         {rightElement}
                   </View>

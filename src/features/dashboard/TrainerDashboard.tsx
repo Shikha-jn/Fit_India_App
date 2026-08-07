@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, StatusBar, View, Text, Image, Pressable, Linking } from 'react-native';
 import { COLORS } from '../../theme/theme';
 import { Trainer } from '../../profile/types/trainer';
@@ -6,6 +6,8 @@ import { LinearGradient } from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { TrainerTabParamList } from '../../types/TrainerTabParamList';
+import { trainerProfile } from '../../services/trainer.service';
+import { useAlert } from '../../context/AlertContext';
 
 interface StatCardProps {
       icon: string;
@@ -226,8 +228,23 @@ const ContactCard: React.FC<ContactCardProps> = ({ trainer }) => (
 
 type TrainerDashboardProps = BottomTabScreenProps<TrainerTabParamList, 'Dashboard'>;
 
-export const TrainerDashboard = ({navigation}: TrainerDashboardProps) => {
+export const TrainerDashboard = ({ navigation }: TrainerDashboardProps) => {
+      const alert = useAlert();
+
       const [trainer, setTrainer] = useState<Trainer>(null as unknown as Trainer); // Replace with actual trainer data fetching logic
+      
+      useEffect(() => {
+            fetchTrainerProfile();
+      }, [trainer]);
+      const fetchTrainerProfile = async () => {
+            try {
+                  const profileData = await trainerProfile();
+                  setTrainer(profileData);
+            } catch (error) {
+                  console.error('Error fetching trainer profile:', error);
+                  alert.error('Error', 'Failed to fetch trainer profile. Please try again later.');
+            }
+      }
       return (
             <>
                   <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />

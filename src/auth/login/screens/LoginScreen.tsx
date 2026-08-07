@@ -21,6 +21,7 @@ import { RootStackParamList } from '../../../types/RootStackParamList';
 import { useNavigation } from '@react-navigation/native';
 import { useAlert } from '../../../context/AlertContext';
 import { useAuthStore } from '../../../store/useAuthStore';
+import { trainerLogin, userLogin } from '../service/login.service';
 
 const ROLE_OPTIONS: SegmentOption<LoginRoleGroup>[] = [
       { value: 'client', label: 'Member / Client', icon: 'person-outline' },
@@ -114,8 +115,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
                   setFormError(null);
                   const response =
                         form.roleGroup === 'client'
-                              ? await userApi.login({ email: payload.email, password: payload.password })
-                              : await trainerAPI.loginTrainer({ email: payload.email, password: payload.password });
+                              ? await userLogin({ email: payload.email, password: payload.password })
+                              : await trainerLogin({ email: payload.email, password: payload.password });
 
                   if (response.data?.success) {
                         console.log('Login response : ', response.data);

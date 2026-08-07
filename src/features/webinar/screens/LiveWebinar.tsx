@@ -16,6 +16,8 @@ import { Webinar, WebinarFilter, WebinarStatus } from '../types/webinar';
 import WebinarCard from '../../../components/WebinarCard';
 import EmptyWebinarState from '../../../components/EmptyWebinarState';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { MainTabParamList } from '../../../types/MainTabParamList';
 
 interface SectionBadgeProps {
       label: string;
@@ -83,22 +85,15 @@ const WebinarFilterTabs: React.FC<WebinarFilterTabsProps> = ({
       </ScrollView>
 );
 
-interface WebinarScreenProps {
-      webinars: Webinar[];
-      loading?: boolean;
-      refreshing?: boolean;
-      onRefresh?: () => void;
-      onPressWebinar?: (webinar: Webinar) => void;
-}
+type WebinarScreenProps = BottomTabNavigationProp<MainTabParamList, 'Webinar'>
 
 const WebinarScreen: React.FC<WebinarScreenProps> = ({
-      webinars,
-      loading,
-      refreshing,
-      onRefresh,
-      onPressWebinar,
+
 }) => {
       const [filter, setFilter] = useState<WebinarFilter>('all');
+      const [webinars, setWebinar] = useState<Webinar[]>([]);
+      const [loading, setLoading] = useState(false);
+      const [refreshing, setrefreshing] = useState(false);
 
       const counts = useMemo(() => {
             return webinars.reduce<Partial<Record<WebinarFilter, number>>>((acc, w) => {
@@ -106,6 +101,14 @@ const WebinarScreen: React.FC<WebinarScreenProps> = ({
                   return acc;
             }, {});
       }, [webinars]);
+
+      const onPressWebinar = (webinar: Webinar) => {
+            // Handle webinar press action here
+      }
+
+      const onRefresh = () => {
+            setrefreshing(true);
+      }
 
       const filtered = useMemo(() => {
             const list = filter === 'all' ? webinars : webinars.filter((w) => w.status === filter);
