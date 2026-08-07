@@ -17,11 +17,22 @@ export const ProfileScreen = () => {
       const navigation = useNavigation<ProfileScreenProp>();
       const alert = useAlert();
       useEffect(() => {
-            alert.warning(
-                  "Login Required",
-                  "Please login to continue.",
-            );
-            navigation.navigate('Login');
+            alert.show({
+                  title: 'Login Required',
+                  message: 'Please login to continue.',
+                  buttons: [
+                        { label: 'No', style: 'secondary', onPress: () => { navigation.navigate('Home') } },
+                        {
+                              label: 'Yes, Login',
+                              style: 'danger',
+                              onPress: () => {
+                                    alert.dismiss();
+                                    navigation.navigate('Login');
+                              },
+                        },
+                  ],
+            });
+            // navigation.navigate('Login');
       }, []);
 
       return (

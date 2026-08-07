@@ -24,3 +24,5 @@ export interface WebinarResponse {
   message: string;
   data: Webinar[];
 }
+
+export type WebinarFilter = 'all' | WebinarStatus
