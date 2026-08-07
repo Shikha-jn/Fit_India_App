@@ -19,6 +19,8 @@ import { LoginFormState, LoginPayload, LoginRoleGroup } from '../../register/typ
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from '../../../types/RootStackParamList';
 import { useNavigation } from '@react-navigation/native';
+import { useAlert } from '../../../context/AlertContext';
+import { useAuthStore } from '../../../store/useAuthStore';
 
 const ROLE_OPTIONS: SegmentOption<LoginRoleGroup>[] = [
       { value: 'client', label: 'Member / Client', icon: 'person-outline' },
@@ -39,6 +41,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
 
 }) => {
       const navigation = useNavigation<LoginScreenProps>();
+      const alert = useAlert();
+      const { setAuth } = useAuthStore();
       const [form, setForm] = useState<LoginFormState>(INITIAL_STATE);
       const [errors, setErrors] = useState<FormErrors>({});
       const [showPassword, setShowPassword] = useState(false);
@@ -108,7 +112,26 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
             try {
                   setSubmitting(true);
                   setFormError(null);
-                  await onLogin?.(payload);
+                  const response =
+                        form.roleGroup === 'client'
+                              ? await userApi.login({ email: payload.email, password: payload.password })
+                              : await trainerAPI.loginTrainer({ email: payload.email, password: payload.password });
+
+                  if (response.data?.success) {
+                        console.log('Login response : ', response.data);
+
+                        alert.success('Login Successful', 'Welcome back!');
+
+                        setAuth(form.roleGroup === 'trainer' ? response.data : response.data, response.data.role, response.data.token);
+
+                        if (form.roleGroup === 'trainer') {
+                              navigation.replace('TrainerTab', { screen: 'Dashboard' });
+                        } else {
+                              navigation.replace('UserTab', { screen: 'Dashboard' });
+                        }
+                  } else {
+                        alert.error('Login Failed', 'Invalid email or password. Please try again.');
+                  }
             } catch (err) {
                   setFormError(
                         err instanceof Error ? err.message : 'Unable to sign in. Please try again.',
