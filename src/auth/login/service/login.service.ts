@@ -22,7 +22,7 @@ export const userLogin = async (
       credentials: LoginCredentials
 ) => {
       try {
-            const response = await publicClient.post('users/login', credentials);
+            const response = await publicClient.post('clients/login', credentials);
             console.log("User login response:", response.data);
             return response.data;
       } catch (error) {
