@@ -20,11 +20,12 @@ export const ProfileScreen = ({ navigation }: ProfileScreenProp) => {
             alert.show({
                   title: 'Login Required',
                   message: 'Please login to continue.',
+                  type: 'confirm',
                   buttons: [
                         { label: 'No', style: 'secondary', onPress: () => { navigation.navigate('Home') } },
                         {
                               label: 'Yes, Login',
-                              style: 'danger',
+                              style: 'primary',
                               onPress: () => {
                                     alert.dismiss();
                                     navigation.navigate('Login');

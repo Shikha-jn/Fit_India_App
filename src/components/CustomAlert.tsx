@@ -71,7 +71,7 @@ const TYPE_CONFIG: Record<
         icon: 'help-circle',
         iconColor: COLORS.primaryDark,
         gradientColors: [COLORS.primaryDark + '26', COLORS.goldDark + '14'],
-        ringColor: 'rgba(0, 180, 232, 0.3)',
+        ringColor: 'rgba(212, 175, 55, 0.3)',
     },
 };
 
