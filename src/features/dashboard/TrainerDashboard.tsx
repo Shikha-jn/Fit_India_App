@@ -4,7 +4,7 @@ import { COLORS } from '../../theme/theme';
 import { Trainer } from '../../profile/types/trainer';
 import { LinearGradient } from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
 import { TrainerTabParamList } from '../../types/TrainerTabParamList';
 import { trainerProfile } from '../../services/trainer.service';
 import { useAlert } from '../../context/AlertContext';
@@ -226,19 +226,20 @@ const ContactCard: React.FC<ContactCardProps> = ({ trainer }) => (
 //       trainer: Trainer;
 // }
 
-type TrainerDashboardProps = BottomTabScreenProps<TrainerTabParamList, 'Dashboard'>;
+type TrainerDashboardProps = NativeBottomTabScreenProps<TrainerTabParamList, 'Dashboard'>;
 
 export const TrainerDashboard = ({ navigation }: TrainerDashboardProps) => {
       const alert = useAlert();
 
       const [trainer, setTrainer] = useState<Trainer>(null as unknown as Trainer); // Replace with actual trainer data fetching logic
-      
+
       useEffect(() => {
             fetchTrainerProfile();
-      }, [trainer]);
+      }, []);
       const fetchTrainerProfile = async () => {
             try {
-                  const profileData = await trainerProfile();
+                  const response = await trainerProfile();
+                  const profileData = response.data;
                   setTrainer(profileData);
             } catch (error) {
                   console.error('Error fetching trainer profile:', error);

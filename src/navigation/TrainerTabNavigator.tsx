@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TrainerTabParamList } from '../types/TrainerTabParamList';
 import { TrainerDashboard } from '../features/dashboard/TrainerDashboard';
-import HomeScreen from '../features/dashboard/HomeScreen';
+import ClientDirectoryScreen from '../features/clientDirectory/screens/ClientDirectoryScreen'
 
 const TrainerTabStack = createBottomTabNavigator<TrainerTabParamList>();
 
@@ -13,7 +13,7 @@ export default function TrainerTabNavigator() {
                   }}
             >
                   <TrainerTabStack.Screen name="Dashboard" component={TrainerDashboard} options={{ tabBarLabel: 'Dashboard' }} />
-                  <TrainerTabStack.Screen name="ClientDirectory" component={TrainerDashboard} options={{ tabBarLabel: 'Client Directory' }} />
+                  <TrainerTabStack.Screen name="ClientDirectory" component={ClientDirectoryScreen} options={{ tabBarLabel: 'Client Directory' }} />
                   <TrainerTabStack.Screen name="Webinar" component={TrainerDashboard} options={{ tabBarLabel: 'Webinar' }} />
                   <TrainerTabStack.Screen name="Profile" component={TrainerDashboard} options={{ tabBarLabel: 'Profile' }} />
             </TrainerTabStack.Navigator>

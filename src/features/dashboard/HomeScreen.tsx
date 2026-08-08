@@ -11,7 +11,7 @@ import PathwaysSection from '../../components/PathwaySection';
 import FounderSection from '../../components/FounderSection';
 import TransformationSection from '../../components/TransformationSection';
 import ImpactSection from '../../components/ImpactSection';
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
 import { TrainerTabParamList } from '../../types/TrainerTabParamList';
 import {MainTabParamList} from '../../types/MainTabParamList';
 
@@ -39,7 +39,7 @@ const PromoBanner: React.FC<PromoBannerProps> = ({ message }) => (
 //       onReadFounderStory?: () => void;
 //       onGetFreeConsultation?: () => void;
 // }
-type HomeScreenProps = BottomTabNavigationProp<MainTabParamList, 'Home'>
+type HomeScreenProps = NativeBottomTabScreenProps<MainTabParamList, 'Home'>
 
 const HomeScreen: React.FC<HomeScreenProps> = ({
       

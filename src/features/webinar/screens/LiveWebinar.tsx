@@ -16,8 +16,9 @@ import { Webinar, WebinarFilter, WebinarStatus } from '../types/webinar';
 import WebinarCard from '../../../components/WebinarCard';
 import EmptyWebinarState from '../../../components/EmptyWebinarState';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
 import { MainTabParamList } from '../../../types/MainTabParamList';
+import { liveWebinar } from '../../../services/webinar.service';
 
 interface SectionBadgeProps {
       label: string;
@@ -85,7 +86,7 @@ const WebinarFilterTabs: React.FC<WebinarFilterTabsProps> = ({
       </ScrollView>
 );
 
-type WebinarScreenProps = BottomTabNavigationProp<MainTabParamList, 'Webinar'>
+type WebinarScreenProps = NativeBottomTabScreenProps<MainTabParamList, 'Webinar'>
 
 const WebinarScreen: React.FC<WebinarScreenProps> = ({
 
@@ -101,6 +102,22 @@ const WebinarScreen: React.FC<WebinarScreenProps> = ({
                   return acc;
             }, {});
       }, [webinars]);
+
+      useEffect(() => {
+            fetchlivewebinar();
+      }, []);
+
+      const fetchlivewebinar = async () => {
+            try {
+                  const response = await liveWebinar();
+                  const webinarData = response.data ? response.data : [];
+                  console.log('Live webinar data:', webinarData);
+                  setWebinar(webinarData);
+            } catch (error) {
+                  console.log('Error in getting webinar data', error);
+                  // throw error;
+            }
+      }
 
       const onPressWebinar = (webinar: Webinar) => {
             // Handle webinar press action here
