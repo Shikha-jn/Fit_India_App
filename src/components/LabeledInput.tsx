@@ -1,101 +1,165 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TextInputProps } from 'react-native';
-import { COLORS } from '../theme/theme';
+import { useState, useRef } from 'react';
+import {
+  Animated,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { COLORS, SPACING, RADII, TYPOGRAPHY } from '../theme/theme'; // adjust path as needed
 
-interface LabeledInputProps extends TextInputProps {
-      label: string;
-      error?: string;
-      containerStyle?: object;
-      rightElement?: React.ReactNode;
+interface LabeledInputProps {
+  label: string;
+  placeholder: string;
+  icon: string;
+  value: string;
+  onChangeText: (t: string) => void;
+  error?: string;
+  keyboardType?: any;
+  autoCapitalize?: any;
+  secureTextEntry?: boolean;
+  trailingIcon?: string;
+  onTrailingPress?: () => void;
+  maxLength?: number;
 }
 
-const LabeledInput: React.FC<LabeledInputProps> = ({
-      label,
-      error,
-      containerStyle,
-      rightElement,
-      style,
-      ...rest
-}) => {
-      const [focused, setFocused] = useState(false);
+export default function LabeledInput({
+  label,
+  placeholder,
+  icon,
+  value,
+  onChangeText,
+  error,
+  keyboardType = 'default',
+  autoCapitalize = 'none',
+  secureTextEntry = false,
+  trailingIcon,
+  onTrailingPress,
+  maxLength,
+}: LabeledInputProps) {
+  const [focused, setFocused] = useState(false);
+  const borderAnim = useRef(new Animated.Value(0)).current;
 
-      return (
-            <View style={[styles.container, containerStyle]}>
-                  <Text style={styles.label}>{label}</Text>
-                  <View
-                        style={[
-                              styles.inputWrap,
-                              focused && styles.inputWrapFocused,
-                              !!error && styles.inputWrapError,
-                        ]}
-                  >
-                        <TextInput
-                              {...rest}
-                              placeholderTextColor={COLORS.textMuted}
-                              style={[styles.input, style]}
-                              onFocus={(e) => {
-                                    setFocused(true);
-                                    rest.onFocus?.(e);
-                              }}
-                              onBlur={(e) => {
-                                    setFocused(false);
-                                    rest.onBlur?.(e);
-                              }}
-                        />
-                        {rightElement}
-                  </View>
-                  {!!error && <Text style={styles.errorText}>{error}</Text>}
-            </View>
-      );
-};
+  const onFocus = () => {
+    setFocused(true);
+    Animated.spring(borderAnim, {
+      toValue: 1,
+      useNativeDriver: false,
+      speed: 28,
+    }).start();
+  };
+  const onBlur = () => {
+    setFocused(false);
+    Animated.spring(borderAnim, {
+      toValue: 0,
+      useNativeDriver: false,
+      speed: 28,
+    }).start();
+  };
 
-const styles = StyleSheet.create({
-      container: {
-            marginBottom: 16,
-      },
-      label: {
-            fontSize: 11,
-            fontWeight: '700',
-            letterSpacing: 0.6,
-            color: COLORS.textMuted,
-            textTransform: 'uppercase',
-            marginBottom: 8,
-      },
-      inputWrap: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            backgroundColor: COLORS.surface,
-            borderRadius: 14,
-            borderWidth: 1,
-            borderColor: COLORS.border,
-            paddingHorizontal: 16,
-            height: 52,
-      },
-      inputWrapFocused: {
-            borderColor: COLORS.gold,
-            shadowColor: COLORS.gold,
-            shadowOffset: { width: 0, height: 0 },
-            shadowOpacity: 0.35,
-            shadowRadius: 8,
-            elevation: 4,
-      },
-      inputWrapError: {
-            borderColor: COLORS.error,
-      },
-      input: {
-            flex: 1,
-            color: COLORS.text,
-            fontSize: 14,
-            fontWeight: '500',
-            padding: 0,
-            height: '100%',
-      },
-      errorText: {
-            color: COLORS.error,
-            fontSize: 11,
-            fontWeight: '600',
-            marginTop: 6,
-      },
+  const borderColor = borderAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [
+      error ? COLORS.error : COLORS.border,
+      error ? COLORS.error : COLORS.primary,
+    ],
+  });
+
+  return (
+    <View style={fStyles.wrap}>
+      <Text style={fStyles.label}>{label}</Text>
+      <Animated.View
+        style={[fStyles.row, { borderColor }, focused && fStyles.rowFocused]}
+      >
+        <Ionicons
+          name={icon as any}
+          size={18}
+          color={
+            focused ? COLORS.primary : error ? COLORS.error : COLORS.textMuted
+          }
+          style={fStyles.icon}
+        />
+        <TextInput
+          style={fStyles.input}
+          placeholder={placeholder}
+          placeholderTextColor={COLORS.textMuted}
+          value={value}
+          onChangeText={onChangeText}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          keyboardType={keyboardType}
+          autoCapitalize={autoCapitalize}
+          autoCorrect={false}
+          secureTextEntry={secureTextEntry}
+          maxLength={maxLength}
+        />
+        {trailingIcon && (
+          <TouchableOpacity onPress={onTrailingPress} style={fStyles.trailing}>
+            <Ionicons
+              name={trailingIcon as any}
+              size={18}
+              color={COLORS.textMuted}
+            />
+          </TouchableOpacity>
+        )}
+      </Animated.View>
+      {!!error && (
+        <View style={fStyles.errorRow}>
+          <Ionicons name="alert-circle" size={12} color={COLORS.error} />
+          <Text style={fStyles.errorText}>{error}</Text>
+        </View>
+      )}
+    </View>
+  );
+}
+
+const fStyles = StyleSheet.create({
+  wrap: {
+    marginBottom: SPACING.md,
+  },
+  label: {
+    fontSize: 11,
+    fontWeight: TYPOGRAPHY.bold,
+    color: COLORS.textSecondary,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+    marginBottom: 7,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.surface,
+    borderRadius: RADII.md,
+    borderWidth: 1.5,
+    borderColor: COLORS.border,
+    height: 54,
+    paddingHorizontal: SPACING.md,
+  },
+  rowFocused: {
+    backgroundColor: COLORS.surfaceElevated,
+  },
+  icon: {
+    marginRight: SPACING.sm,
+  },
+  input: {
+    flex: 1,
+    fontSize: 15,
+    color: COLORS.text,
+  },
+  trailing: {
+    padding: 4,
+  },
+  errorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 5,
+  },
+  errorText: {
+    fontSize: 11,
+    color: COLORS.error,
+    fontWeight: TYPOGRAPHY.semiBold,
+  },
 });
-
-export default LabeledInput;
