@@ -19,7 +19,7 @@ export default function MainTabNavigator() {
                   <MainTabStack.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: 'Home' }} />
                   <MainTabStack.Screen name="Services" component={ServicesScreen} options={{ tabBarLabel: 'Services' }} />
                   <MainTabStack.Screen name="Webinar" component={WebinarScreen} options={{ tabBarLabel: 'Webinar' }} />
-                  <MainTabStack.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: 'Profile' }} />
+                  {/* <MainTabStack.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: 'Profile' }} /> */}
             </MainTabStack.Navigator>
       );
 }

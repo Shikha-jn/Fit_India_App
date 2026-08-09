@@ -72,8 +72,8 @@ const BioCertificationCard: React.FC<BioCertificationCardProps> = ({ trainer }) 
                   <View style={styles.column}>
                         <Text style={styles.columnTitle}>Specializations</Text>
                         <View style={styles.chipWrap}>
-                              {trainer.specialization.length > 0 ? (
-                                    trainer.specialization.map((item) => (
+                              {trainer?.specialization?.length > 0 ? (
+                                    trainer?.specialization?.map((item) => (
                                           <Chip key={item} label={item} tone="primary" />
                                     ))
                               ) : (
@@ -85,8 +85,8 @@ const BioCertificationCard: React.FC<BioCertificationCardProps> = ({ trainer }) 
                   <View style={styles.column}>
                         <Text style={styles.columnTitle}>Certificates</Text>
                         <View style={styles.chipWrap}>
-                              {trainer.certifications.length > 0 ? (
-                                    trainer.certifications.map((item) => (
+                              {trainer?.certifications?.length > 0 ? (
+                                    trainer?.certifications?.map((item) => (
                                           <Chip key={item} label={item} tone="primary" />
                                     ))
                               ) : (
@@ -114,7 +114,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ trainer }) => (
             <View style={styles.topRow}>
                   <View style={styles.textBlock}>
                         <Text style={styles.title}>
-                              Coach Workspace: <Text style={styles.name}>{trainer.name}</Text>
+                              Coach Workspace: <Text style={styles.name}>{trainer?.name}</Text>
                         </Text>
                         <Text style={styles.subtitle}>
                               Review assigned students, customize training journals, and
@@ -123,16 +123,16 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ trainer }) => (
                   </View>
 
                   <View style={styles.avatarWrap}>
-                        {trainer.profileImage ? (
+                        {trainer?.profileImage ? (
                               <Image source={{ uri: trainer.profileImage }} style={styles.avatar} />
                         ) : (
                               <View style={[styles.avatar, styles.avatarFallback]}>
                                     <Text style={styles.avatarInitial}>
-                                          {trainer.name.charAt(0).toUpperCase()}
+                                          {trainer?.name?.charAt(0).toUpperCase()}
                                     </Text>
                               </View>
                         )}
-                        {trainer.isVerified && (
+                        {trainer?.isVerified && (
                               <View style={styles.verifiedBadge}>
                                     <Icon name="checkmark" size={11} color={COLORS.primary} />
                               </View>
@@ -151,14 +151,14 @@ const QuickStatsRow: React.FC<QuickStatsRowProps> = ({ trainer }) => (
             <StatCard
                   icon="people-outline"
                   label="Total Capacity"
-                  value={String(trainer.clients.length)}
+                  value={String(trainer?.clients?.length)}
                   caption="Active assigned students"
             />
             <StatCard
                   icon="ribbon-outline"
                   label="Experience"
-                  value={`${trainer.experience}`}
-                  caption={trainer.experience === 1 ? 'Year coaching' : 'Years coaching'}
+                  value={`${trainer?.experience}`}
+                  caption={trainer?.experience === 1 ? 'Year coaching' : 'Years coaching'}
             />
       </View>
 );
@@ -175,8 +175,8 @@ const AvailabilityCard: React.FC<AvailabilityCardProps> = ({ trainer }) => (
             </View>
 
             <View style={styles.avachipWrap}>
-                  {trainer.availability.length > 0 ? (
-                        trainer.availability.map((slot) => (
+                  {trainer?.availability?.length > 0 ? (
+                        trainer?.availability?.map((slot) => (
                               <Chip key={slot} label={slot} icon="time-outline" tone="gold" />
                         ))
                   ) : (
@@ -196,13 +196,13 @@ const ContactCard: React.FC<ContactCardProps> = ({ trainer }) => (
 
             <Pressable
                   style={styles.conrow}
-                  onPress={() => Linking.openURL(`mailto:${trainer.email}`).catch(() => { })}
+                  onPress={() => Linking.openURL(`mailto:${trainer?.email}`).catch(() => { })}
             >
                   <View style={styles.coniconCircle}>
                         <Icon name="mail-outline" size={15} color={COLORS.primary} />
                   </View>
                   <Text style={styles.rowText} numberOfLines={1}>
-                        {trainer.email}
+                        {trainer?.email}
                   </Text>
                   <Icon name="chevron-forward" size={16} color={COLORS.textMuted} />
             </Pressable>
@@ -211,12 +211,12 @@ const ContactCard: React.FC<ContactCardProps> = ({ trainer }) => (
 
             <Pressable
                   style={styles.conrow}
-                  onPress={() => Linking.openURL(`tel:${trainer.phone}`).catch(() => { })}
+                  onPress={() => Linking.openURL(`tel:${trainer?.phone}`).catch(() => { })}
             >
                   <View style={styles.iconCircle}>
                         <Icon name="call-outline" size={15} color={COLORS.primary} />
                   </View>
-                  <Text style={styles.rowText}>{trainer.phone}</Text>
+                  <Text style={styles.rowText}>{trainer?.phone}</Text>
                   <Icon name="chevron-forward" size={16} color={COLORS.textMuted} />
             </Pressable>
       </View>

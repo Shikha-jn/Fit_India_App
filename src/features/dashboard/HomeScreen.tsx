@@ -13,7 +13,10 @@ import TransformationSection from '../../components/TransformationSection';
 import ImpactSection from '../../components/ImpactSection';
 import { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
 import { TrainerTabParamList } from '../../types/TrainerTabParamList';
-import {MainTabParamList} from '../../types/MainTabParamList';
+import { MainTabParamList } from '../../types/MainTabParamList';
+import { CompositeScreenProps, } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../types/RootStackParamList';
 
 interface PromoBannerProps {
       message: string;
@@ -28,25 +31,14 @@ const PromoBanner: React.FC<PromoBannerProps> = ({ message }) => (
       </View>
 );
 
-// interface HomeScreenProps {
-//       isSignedIn?: boolean;
-//       onPressSignIn?: () => void;
-//       onPressNotifications?: () => void;
-//       onPressProfile?: () => void;
-//       onExplorePrograms?: () => void;
-//       onBookConsultation?: () => void;
-//       onExploreAllServices?: () => void;
-//       onReadFounderStory?: () => void;
-//       onGetFreeConsultation?: () => void;
-// }
-type HomeScreenProps = NativeBottomTabScreenProps<MainTabParamList, 'Home'>
+type HomeScreenProps =
+      CompositeScreenProps<NativeBottomTabScreenProps<MainTabParamList, 'Home'>,
+      NativeStackScreenProps < RootStackParamList >>;
 
-const HomeScreen: React.FC<HomeScreenProps> = ({
-      
-}) => {
+const HomeScreen = ({ navigation }: HomeScreenProps) => {
       const isSignedIn = true;
       const onPressSignIn = () => {
-            console.log("Sign In pressed");
+            navigation.navigate('Login');
       };
       const onPressNotifications = () => {
             console.log("Notifications pressed");

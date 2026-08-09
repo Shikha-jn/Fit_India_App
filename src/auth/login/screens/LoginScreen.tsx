@@ -42,7 +42,7 @@ type FormErrors = Partial<Record<keyof LoginFormState, string>>;
 
 type LoginScreenProps = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
-const LoginScreen: React.FC<LoginScreenProps> = ({}) => {
+const LoginScreen: React.FC<LoginScreenProps> = ({ }) => {
   const navigation = useNavigation<LoginScreenProps>();
   const alert = useAlert();
   const { setAuth } = useAuthStore();
@@ -118,15 +118,16 @@ const LoginScreen: React.FC<LoginScreenProps> = ({}) => {
       const response =
         form.roleGroup === 'client'
           ? await userLogin({
-              email: payload.email,
-              password: payload.password,
-            })
+            email: payload.email,
+            password: payload.password,
+          })
           : await trainerLogin({
-              email: payload.email,
-              password: payload.password,
-            });
+            email: payload.email,
+            password: payload.password,
+          });
 
-      if (response.data?.success) {
+      if (response.success) {
+        debugger
         console.log('Login response : ', response.data);
 
         alert.success('Login Successful', 'Welcome back!');
@@ -134,7 +135,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({}) => {
         setAuth(
           form.roleGroup === 'trainer' ? response.data : response.data,
           response.data.role,
-          response.data.token,
+          response.token,
         );
 
         if (form.roleGroup === 'trainer') {
@@ -144,16 +145,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({}) => {
         }
       } else {
         alert.error(
-          'Login Failed',
-          'Invalid email or password. Please try again.',
+          response.message
         );
       }
-    } catch (err) {
-      setFormError(
-        err instanceof Error
-          ? err.message
-          : 'Unable to sign in. Please try again.',
-      );
     } finally {
       setSubmitting(false);
     }
