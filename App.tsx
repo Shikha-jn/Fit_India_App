@@ -1,11 +1,9 @@
 import { NewAppScreen } from '@react-native/new-app-screen';
 import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
 import { AlertProvider } from './src/context/AlertContext';
+import { COLORS } from './src/theme/theme';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -13,8 +11,10 @@ function App() {
   return (
     <SafeAreaProvider>
       <AlertProvider>
-        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <AppNavigator />
+        <SafeAreaView style={styles.container}>
+          <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+          <AppNavigator />
+        </SafeAreaView>
       </AlertProvider>
     </SafeAreaProvider>
   );
@@ -23,6 +23,7 @@ function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.background,
   },
 });
 

@@ -40,3 +40,28 @@ export const COLORS = {
       gradientMid: "#232329",
       gradientEnd: "#B68F25",
 };
+
+export const SPACING = {
+      xs: 4,
+      sm: 8,
+      md: 16,
+      lg: 24,
+      xl: 32,
+      xxl: 48,
+};
+
+export const RADII = {
+      sm: 6,
+      md: 12,
+      lg: 20,
+      xl: 28,
+      full: 999,
+};
+
+export const TYPOGRAPHY = {
+      regular: '400' as const,
+      medium: '500' as const,
+      semiBold: '600' as const,
+      bold: '700' as const,
+      extraBold: '800' as const,
+};

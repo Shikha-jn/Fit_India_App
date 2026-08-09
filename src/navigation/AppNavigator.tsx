@@ -16,6 +16,7 @@ export default function AppNavigator() {
                         // initialRouteName="Splash"
                         screenOptions={{
                               headerShown: false,
+                              statusBarStyle: 'light',
                         }}
                   >
                         {/* <Stack.Screen name="Splash" component={SplashScreen} /> */}
