@@ -43,3 +43,25 @@ export const getSubscription = async () => {
             throw error;
       }
 }
+
+export const getHealthRecord = async () => {
+      try {
+            const response = await privateClient.get('clients/progress');
+            console.log('Clients health records:', response);
+            return response.data;
+      } catch (error) {
+            console.log('Error in getting health records:', error);
+            throw error;
+      }
+}
+
+export const addHealthRecord = async (healthRecord: any) => {
+      try {
+            const response = await privateClient.post('clients/progress', healthRecord);
+            console.log('New health record:', response);
+            return response.data;
+      } catch (error) {
+            console.log('Error in adding health record', error);
+            throw error;
+      }
+}

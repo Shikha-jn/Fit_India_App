@@ -1,6 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { UserTabParamList } from '../types/UserTabParamList';
-import { HomeScreen } from '../features/dashboard/HomeScreen';
+import UserDashboard from '../features/dashboard/UserDashboard';
+import HealthRecordScreen from '../features/healthTrack/screens/HealthRecord';
+import HomeScreen from '../features/dashboard/HomeScreen';
 
 const UserTabStack = createBottomTabNavigator<UserTabParamList>();
 
@@ -11,10 +13,10 @@ export default function UserTabNavigator() {
                         headerShown: false,
                   }}
             >
-                  <UserTabStack.Screen name="Dashboard" component={HomeScreen} />
-                  <UserTabStack.Screen name="WorkoutAndDiet" component={HomeScreen} />
-                  <UserTabStack.Screen name="Webinars" component={HomeScreen} />
-                  <UserTabStack.Screen name="Profile" component={HomeScreen} />
+                  <UserTabStack.Screen name="Dashboard" component={UserDashboard} />
+                  <UserTabStack.Screen name="HealthRecord" component={HealthRecordScreen} />
+                  <UserTabStack.Screen name="Webinars" component={UserDashboard} />
+                  <UserTabStack.Screen name="Profile" component={UserDashboard} />
             </UserTabStack.Navigator>
       );
 }
