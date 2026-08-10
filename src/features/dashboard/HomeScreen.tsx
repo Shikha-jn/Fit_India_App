@@ -17,6 +17,7 @@ import { MainTabParamList } from '../../types/MainTabParamList';
 import { CompositeScreenProps, } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/RootStackParamList';
+import { useAlert } from '../../context/AlertContext';
 
 interface PromoBannerProps {
       message: string;
@@ -33,12 +34,29 @@ const PromoBanner: React.FC<PromoBannerProps> = ({ message }) => (
 
 type HomeScreenProps =
       CompositeScreenProps<NativeBottomTabScreenProps<MainTabParamList, 'Home'>,
-      NativeStackScreenProps < RootStackParamList >>;
+            NativeStackScreenProps<RootStackParamList>>;
 
 const HomeScreen = ({ navigation }: HomeScreenProps) => {
+      const alert = useAlert();
       const isSignedIn = true;
       const onPressSignIn = () => {
-            navigation.navigate('Login');
+            // navigation.navigate('Login');
+            alert.show({
+                  title: 'Login Required',
+                  message: 'Please login to continue.',
+                  type: 'confirm',
+                  buttons: [
+                        { label: 'No', style: 'secondary', onPress: () => { alert.dismiss() } },
+                        {
+                              label: 'Yes, Login',
+                              style: 'primary',
+                              onPress: () => {
+                                    alert.dismiss();
+                                    navigation.navigate('Login');
+                              },
+                        },
+                  ],
+            });
       };
       const onPressNotifications = () => {
             console.log("Notifications pressed");
@@ -75,9 +93,8 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
                         contentContainerStyle={styles.content}
                         showsVerticalScrollIndicator={false}
                   >
-                        <PromoBanner message="Launch Offer: Get 15% discount on all wellness plans!" />
+                        {/* <PromoBanner message="Launch Offer: Get 15% discount on all wellness plans!" /> */}
                         <AppHeader
-                              isSignedIn={isSignedIn}
                               onPressSignIn={onPressSignIn}
                               onPressNotifications={onPressNotifications}
                               onPressProfile={onPressProfile}

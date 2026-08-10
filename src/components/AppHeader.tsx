@@ -26,29 +26,14 @@ const AppHeader: React.FC<AppHeaderProps> = ({
             </View>
 
             <View style={styles.actionsRow}>
-                  {isSignedIn ? (
-                        <>
-                              <Pressable onPress={onPressNotifications} hitSlop={8} style={styles.iconBtn}>
-                                    <Icon name="notifications-outline" size={20} color={COLORS.text} />
-                              </Pressable>
-                              <Pressable onPress={onPressProfile} hitSlop={8}>
-                                    <View style={styles.avatar}>
-                                          <Icon name="person" size={16} color={COLORS.text} />
-                                    </View>
-                              </Pressable>
-                        </>
-                  ) : (
-                        <Pressable onPress={onPressSignIn}>
-                              <LinearGradient
-                                    colors={[COLORS.goldLight, COLORS.primaryLight]}
-                                    start={{ x: 0, y: 0 }}
-                                    end={{ x: 1, y: 0 }}
-                                    style={styles.signInPill}
-                              >
-                                    <Text style={styles.signInText}>Sign In</Text>
-                              </LinearGradient>
-                        </Pressable>
-                  )}
+                  <Pressable onPress={onPressNotifications} hitSlop={8} style={styles.iconBtn}>
+                        <Icon name="notifications-outline" size={20} color={COLORS.text} />
+                  </Pressable>
+                  <Pressable onPress={onPressSignIn} hitSlop={8}>
+                        <View style={styles.avatar}>
+                              <Icon name="person" size={16} color={COLORS.text} />
+                        </View>
+                  </Pressable>
             </View>
       </View>
 );

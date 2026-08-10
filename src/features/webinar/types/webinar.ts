@@ -1,3 +1,5 @@
+
+
 export type WebinarStatus =
   | "scheduled"
   | "ongoing"
@@ -9,7 +11,7 @@ export interface Webinar {
   title: string;
   description: string;
   scheduleTime: string;
-  trainer: string;
+  trainer: Trainer;
   participants: string[];
   meetingLink: string;
   status: WebinarStatus;
@@ -23,6 +25,14 @@ export interface WebinarResponse {
   success: boolean;
   message: string;
   data: Webinar[];
+}
+
+export interface Trainer {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  specialization: string[];
 }
 
 export type WebinarFilter = 'all' | WebinarStatus

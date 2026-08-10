@@ -16,7 +16,7 @@ export interface UserData {
       name: string;
       email: string;
       phone: string;
-      role: "client" | "trainer" | "admin";
+      role: string;
       profileImage: string;
       status: "active" | "inactive";
       age: number;

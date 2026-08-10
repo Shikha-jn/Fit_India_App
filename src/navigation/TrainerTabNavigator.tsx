@@ -13,12 +13,12 @@ export default function TrainerTabNavigator() {
                   screenOptions={{
                         headerShown: false,
                   }}
-                  // tabBar={(props) => <CustomTabBar {...props} />}
+                  tabBar={(props) => <CustomTabBar {...props} />}
             >
                   <TrainerTabStack.Screen name="Dashboard" component={TrainerDashboard} options={{ tabBarLabel: 'Dashboard' }} />
                   <TrainerTabStack.Screen name="ClientDirectory" component={ClientDirectoryScreen} options={{ tabBarLabel: 'Client Directory' }} />
                   <TrainerTabStack.Screen name="Webinar" component={WebinarScreen} options={{ tabBarLabel: 'Webinar' }} />
-                  <TrainerTabStack.Screen name="Profile" component={TrainerDashboard} options={{ tabBarLabel: 'Profile' }} />
+                  {/* <TrainerTabStack.Screen name="Profile" component={TrainerDashboard} options={{ tabBarLabel: 'Profile' }} /> */}
             </TrainerTabStack.Navigator>
       );
 }

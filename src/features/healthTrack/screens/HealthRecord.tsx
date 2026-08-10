@@ -40,8 +40,8 @@ const TONES: Record<PeriodsCycleStatus, { bg: string; text: string }> = {
 const CycleStatusPill: React.FC<CycleStatusPillProps> = ({ status }) => {
       const tone = TONES[status];
       return (
-            <View style={[styles.pill, { backgroundColor: tone.bg }]}>
-                  <Text style={[styles.text, { color: tone.text }]}>{status}</Text>
+            <View style={[styles.pill, { backgroundColor: tone?.bg }]}>
+                  <Text style={[styles.text, { color: tone?.text }]}>{status}</Text>
             </View>
       );
 };

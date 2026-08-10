@@ -22,6 +22,13 @@ const ICON_MAP: Record<string, string> = {
       Home: 'home-outline',
       Services: 'grid-outline',
       Webinar: 'videocam-outline',
+
+      //Trainer
+      Dashboard: 'home-outline',
+      ClientDirectory: 'people-outline',
+      //User
+      HealthRecord: 'heart-circle-outline',
+      Webinars: 'videocam-outline',
       Profile: 'person-outline',
 };
 
@@ -30,6 +37,13 @@ const ICON_MAP_ACTIVE: Record<string, string> = {
       Home: 'home',
       Services: 'grid',
       Webinar: 'videocam',
+
+      //Trainer
+      Dashboard: 'home',
+      ClientDirectory: 'people',
+      //User
+      HealthRecord: 'heart-circle',
+      Webinars: 'videocam',
       Profile: 'person',
 };
 

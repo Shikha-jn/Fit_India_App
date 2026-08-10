@@ -3,7 +3,7 @@ export interface Trainer {
       name: string;
       email: string;
       phone: string;
-      role: "trainer";
+      role: string;
       profileImage: string;
       specialization: string[];
       experience: number;

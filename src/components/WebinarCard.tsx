@@ -146,7 +146,7 @@ const WebinarCard: React.FC<WebinarCardProps> = ({ webinar, onPressCta }) => {
                         <View style={styles.metaRow}>
                               <View style={styles.metaItem}>
                                     <Icon name="person-circle-outline" size={15} color={COLORS.gold} />
-                                    <Text style={styles.metaText}>{trainer}</Text>
+                                    <Text style={styles.metaText}>{trainer.name}</Text>
                               </View>
                               <View style={styles.metaItem}>
                                     <Icon name="calendar-outline" size={14} color={COLORS.textMuted} />
