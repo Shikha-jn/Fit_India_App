@@ -25,7 +25,7 @@ export interface UserData {
       targetWeight: number;
       medicalConditions: string[];
       fitnessGoal: string;
-      assignedTrainer: string;
+      assignedTrainer: Trainer;
       trialsUsed: boolean;
       attendance: string[];
       webinarsRegistered: string[];
@@ -44,4 +44,12 @@ export interface LoginResponse {
       token: string;
       role: "client" | "trainer" | "admin";
       data: UserData;
+}
+
+export interface Trainer{
+      _id: string;
+      name: string;
+      email: string;
+      phone: string;
+      specialization: string[];
 }
