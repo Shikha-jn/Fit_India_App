@@ -19,7 +19,7 @@ export default function UserTabNavigator() {
             >
                   <UserTabStack.Screen name="Dashboard" component={UserDashboard} />
                   <UserTabStack.Screen name="HealthRecord" component={HealthRecordScreen} />
-                  <UserTabStack.Screen name="Webinars" component={WebinarScreen} />
+                  <UserTabStack.Screen name="Webinar" component={WebinarScreen} />
                   <UserTabStack.Screen name="Profile" component={UserProfileScreen} />
             </UserTabStack.Navigator>
       );

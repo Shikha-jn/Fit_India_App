@@ -99,7 +99,7 @@ const CapacityBar: React.FC<CapacityBarProps> = ({ filled, capacity }) => {
 interface WebinarCardProps {
       webinar: Webinar;
       onPressCta?: (webinar: Webinar) => void;
-      role?: string
+      role?: string;
 }
 
 const FALLBACK_BANNER =

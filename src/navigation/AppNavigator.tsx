@@ -23,7 +23,7 @@ export default function AppNavigator() {
                               statusBarStyle: 'light',
                         }}
                   >
-                        {/* <Stack.Screen name="Splash" component={SplashScreen} /> */}
+                        <Stack.Screen name="Splash" component={SplashScreen} />
                         <Stack.Screen name="MainTab" component={MainTabNavigator} />
                         <Stack.Screen name="UserTab" component={UserTabNavigator} />
                         <Stack.Screen name="TrainerTab" component={TrainerTabNavigator} />

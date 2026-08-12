@@ -14,9 +14,6 @@ const MIN_DISPLAY_MS = 2200;
 
 const SplashScreen = ({ navigation }: SplashScreenProps) => {
       const loadAuth = useAuthStore((s) => s.loadAuth);
-      const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-      const loggedInRole = useAuthStore((s) => s.loggedInRole);
-      const authLoaded = useAuthStore((s) => s.loadAuth);
 
       // Entrance animations
       const logoScale = useRef(new Animated.Value(0.6)).current;
@@ -139,48 +136,30 @@ const SplashScreen = ({ navigation }: SplashScreenProps) => {
                   ),
             );
             dotLoop.start();
-
+            
+            const timer = setTimeout(() => {
+                  handleNavigation();
+            }, 4200);
             return () => {
+                  clearTimeout(timer);
                   dotLoop.stop();
             };
-            // eslint-disable-next-line react-hooks/exhaustive-deps
       }, []);
 
       const startedAtRef = useRef(Date.now());
 
-      // Kick off the auth check once, on mount.
-      useEffect(() => {
-            loadAuth();
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, []);
+      const handleNavigation  = async() => {
+            await loadAuth();
 
-      // Once auth has resolved, navigate — but never before MIN_DISPLAY_MS has
-      // elapsed, so the entrance animation always gets to play out.
-      useEffect(() => {
-            if (!authLoaded) return;
-
-            const elapsed = Date.now() - startedAtRef.current;
-            const remaining = Math.max(0, MIN_DISPLAY_MS - elapsed);
-            const timeout = setTimeout(navigateOnward, remaining);
-
-            return () => clearTimeout(timeout);
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [authLoaded]);
-
-      const navigateOnward = () => {
+            const {isAuthenticated, loggedInRole} = useAuthStore.getState();
             if (!isAuthenticated) {
-                  // navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
                   navigation.replace('MainTab', { screen: 'Home' });
                   return;
             }
 
             if (loggedInRole === 'trainer') {
-                  // navigation.reset({ index: 0, routes: [{ name: 'TrainerDashboard' }] });
                   navigation.replace('TrainerTab', { screen: 'Dashboard' });
             } else {
-                  // Default to the client dashboard for 'client' (and any other
-                  // authenticated role that doesn't have a dedicated screen yet).
-                  // navigation.reset({ index: 0, routes: [{ name: 'ClientDashboard' }] });
                   navigation.replace('UserTab', { screen: 'Dashboard' });
             }
       };

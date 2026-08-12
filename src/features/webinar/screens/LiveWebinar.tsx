@@ -12,20 +12,19 @@ import {
       Animated,
 } from 'react-native';
 import { COLORS } from '../../../theme/theme';
-import { Webinar, WebinarFilter, WebinarStatus } from '../types/webinar';
+import { Webinar, WebinarFilter } from '../types/webinar';
 import WebinarCard from '../../../components/WebinarCard';
 import EmptyWebinarState from '../../../components/EmptyWebinarState';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
 import { MainTabParamList } from '../../../types/MainTabParamList';
 import { liveWebinar } from '../../../services/webinar.service';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAlert } from '../../../context/AlertContext';
-import { CompositeScreenProps, } from '@react-navigation/native';
 import { RootStackParamList } from '../../../types/RootStackParamList';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp,  } from '@react-navigation/native-stack';
+import { UserTabParamList } from '../../../types/UserTabParamList';
+import { useAuthStore } from '../../../store/useAuthStore';
 
-const getData = await AsyncStorage.getItem('auth');
 
 interface SectionBadgeProps {
       label: string;
@@ -93,20 +92,17 @@ const WebinarFilterTabs: React.FC<WebinarFilterTabsProps> = ({
       </ScrollView>
 );
 
-type WebinarScreenProps = CompositeScreenProps<NativeBottomTabScreenProps<MainTabParamList, 'Webinar'>,
-      NativeStackScreenProps<RootStackParamList>>
+type navigationParam = UserTabParamList | MainTabParamList;
+type WebinarScreenProps = NativeBottomTabScreenProps<navigationParam, 'Webinar'>
 
 const WebinarScreen = ({ navigation }: WebinarScreenProps) => {
+      const rootNav = navigation.getParent<NativeStackNavigationProp<RootStackParamList>>();
       const alert = useAlert();
       const [filter, setFilter] = useState<WebinarFilter>('all');
       const [webinars, setWebinar] = useState<Webinar[]>([]);
       const [loading, setLoading] = useState(false);
       const [refreshing, setrefreshing] = useState(false);
-      const [isAuthenticated, setisAuthenticated] = useState(false);
-
-      if (getData) {
-            setisAuthenticated(true);
-      }
+      const {isAuthenticated} = useAuthStore();
 
       const counts = useMemo(() => {
             return webinars.reduce<Partial<Record<WebinarFilter, number>>>((acc, w) => {
@@ -146,7 +142,7 @@ const WebinarScreen = ({ navigation }: WebinarScreenProps) => {
                                     style: 'primary',
                                     onPress: () => {
                                           alert.dismiss();
-                                          navigation.replace('Login');
+                                          rootNav.replace('Login');
                                     },
                               },
                         ],

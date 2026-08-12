@@ -1,6 +1,6 @@
 export type UserTabParamList = {
       Dashboard: undefined;
       HealthRecord: undefined;
-      Webinars: undefined;
+      Webinar: undefined;
       Profile: undefined;
 }
