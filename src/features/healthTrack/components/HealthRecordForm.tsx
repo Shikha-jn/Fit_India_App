@@ -4,6 +4,14 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../../../theme/theme';
 import { HealthLogPayload, PeriodsCycleStatus } from '../types/healthRecord';
 
+export function formatRecordDate(dateStr: string): string {
+      const date = new Date(dateStr);
+      if (Number.isNaN(date.getTime())) return dateStr;
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+}
 const OPTIONS: PeriodsCycleStatus[] =
       ['None/Regular', 'Follicular Phase', 'Irregular', 'Letual Phase', 'Menstruation (Period)', 'Ovulation', 'Postmartum'];
 
@@ -138,6 +146,7 @@ const HealthRecordForm: React.FC<LogProgressFormProps> = ({ onSave }) => {
       const [notes, setNotes] = useState('');
       const [saving, setSaving] = useState(false);
       const [weight, setWeight] = useState('');
+      const [date, setDate] = useState('');
 
       const handleSave = async () => {
             const payload: HealthLogPayload = {
@@ -146,7 +155,8 @@ const HealthRecordForm: React.FC<LogProgressFormProps> = ({ onSave }) => {
                   calorieBurned: Number(calorieBurned) || 0,
                   periodsCycleStatus: cycleStatus,
                   notes: notes.trim(),
-                  weight: Number(weight) || 0
+                  weight: Number(weight) || 0,
+                  date: formatRecordDate(new Date().toString())
             };
 
             try {

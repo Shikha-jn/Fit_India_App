@@ -20,7 +20,7 @@ import {
   LoginPayload,
   LoginRoleGroup,
 } from '../../register/types/register';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../types/RootStackParamList';
 import { useNavigation } from '@react-navigation/native';
 import { useAlert } from '../../../context/AlertContext';
@@ -40,10 +40,10 @@ const INITIAL_STATE: LoginFormState = {
 
 type FormErrors = Partial<Record<keyof LoginFormState, string>>;
 
-type LoginScreenProps = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+type LoginScreenProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
-const LoginScreen: React.FC<LoginScreenProps> = ({ }) => {
-  const navigation = useNavigation<LoginScreenProps>();
+const LoginScreen = ({ navigation }: LoginScreenProps) => {
+  // const navigation = useNavigation<LoginScreenProps>();
   const alert = useAlert();
   const { setAuth } = useAuthStore();
   const [form, setForm] = useState<LoginFormState>(INITIAL_STATE);

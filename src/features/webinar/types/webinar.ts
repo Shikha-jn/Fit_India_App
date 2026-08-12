@@ -17,6 +17,8 @@ export interface Webinar {
   status: WebinarStatus;
   capacity: number;
   bannerImage: string;
+  discountedPrice: number;
+  originalPrice: number;
   createdAt: string;
   updatedAt: string;
 }

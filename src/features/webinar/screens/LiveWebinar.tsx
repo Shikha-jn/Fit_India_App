@@ -19,6 +19,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
 import { MainTabParamList } from '../../../types/MainTabParamList';
 import { liveWebinar } from '../../../services/webinar.service';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAlert } from '../../../context/AlertContext';
+import { CompositeScreenProps, } from '@react-navigation/native';
+import { RootStackParamList } from '../../../types/RootStackParamList';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+const getData = await AsyncStorage.getItem('auth');
 
 interface SectionBadgeProps {
       label: string;
@@ -86,15 +93,20 @@ const WebinarFilterTabs: React.FC<WebinarFilterTabsProps> = ({
       </ScrollView>
 );
 
-type WebinarScreenProps = NativeBottomTabScreenProps<MainTabParamList, 'Webinar'>
+type WebinarScreenProps = CompositeScreenProps<NativeBottomTabScreenProps<MainTabParamList, 'Webinar'>,
+      NativeStackScreenProps<RootStackParamList>>
 
-const WebinarScreen: React.FC<WebinarScreenProps> = ({
-
-}) => {
+const WebinarScreen = ({ navigation }: WebinarScreenProps) => {
+      const alert = useAlert();
       const [filter, setFilter] = useState<WebinarFilter>('all');
       const [webinars, setWebinar] = useState<Webinar[]>([]);
       const [loading, setLoading] = useState(false);
       const [refreshing, setrefreshing] = useState(false);
+      const [isAuthenticated, setisAuthenticated] = useState(false);
+
+      if (getData) {
+            setisAuthenticated(true);
+      }
 
       const counts = useMemo(() => {
             return webinars.reduce<Partial<Record<WebinarFilter, number>>>((acc, w) => {
@@ -121,10 +133,35 @@ const WebinarScreen: React.FC<WebinarScreenProps> = ({
 
       const onPressWebinar = (webinar: Webinar) => {
             // Handle webinar press action here
+            if (isAuthenticated === false) {
+                  // navigation.navigate('Login');
+                  alert.show({
+                        title: 'Login Required',
+                        message: 'Please login to continue.',
+                        type: 'confirm',
+                        buttons: [
+                              { label: 'No', style: 'secondary', onPress: () => { alert.dismiss() } },
+                              {
+                                    label: 'Yes, Login',
+                                    style: 'primary',
+                                    onPress: () => {
+                                          alert.dismiss();
+                                          navigation.replace('Login');
+                                    },
+                              },
+                        ],
+                  });
+
+            }
       }
 
       const onRefresh = () => {
-            setrefreshing(true);
+            try {
+                  setrefreshing(true);
+                  fetchlivewebinar();
+            } finally {
+                  setrefreshing(false);
+            }
       }
 
       const filtered = useMemo(() => {
@@ -140,13 +177,14 @@ const WebinarScreen: React.FC<WebinarScreenProps> = ({
       }, [webinars, filter]);
 
       const handleCta = (webinar: Webinar) => {
-            if (onPressWebinar) {
-                  onPressWebinar(webinar);
-                  return;
-            }
-            if (webinar.meetingLink) {
-                  Linking.openURL(webinar.meetingLink).catch(() => { });
-            }
+            // if (onPressWebinar) {
+            //       onPressWebinar(webinar);
+            //       return;
+            // }
+            // if (webinar.meetingLink) {
+            //       Linking.openURL(webinar.meetingLink).catch(() => { });
+            // }
+            //Razor Pay
       };
 
       return (
@@ -190,7 +228,7 @@ const WebinarScreen: React.FC<WebinarScreenProps> = ({
                         }
                         renderItem={({ item }) => (
                               <View style={styles.cardWrap}>
-                                    <WebinarCard webinar={item} onPressCta={handleCta} />
+                                    <WebinarCard webinar={item} onPressCta={isAuthenticated? handleCta : onPressWebinar} />
                               </View>
                         )}
                         ListEmptyComponent={

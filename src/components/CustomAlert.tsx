@@ -63,7 +63,7 @@ const TYPE_CONFIG: Record<
     },
     info: {
         icon: 'information-circle',
-        iconColor: '#00D4A0',
+        iconColor: COLORS.goldDark,
         gradientColors: [COLORS.surfaceElevated + '26', COLORS.primary + '14'],
         ringColor: 'rgba(212, 175, 55, 0.3)',
     },
@@ -538,7 +538,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 20,
         fontWeight: '800',
-        color: COLORS.backgroundLight,
+        color: COLORS.backgroundSecondary,
         textAlign: 'center',
         letterSpacing: -0.2,
         paddingHorizontal: 24,

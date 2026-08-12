@@ -43,25 +43,25 @@ const MenuRow: React.FC<MenuRowProps> = ({
 );
 
 interface MenuSectionProps {
-      onEditProfile?: () => void;
+      onViewAttendance?: () => void;
       onChangePassword?: () => void;
-      onNotificationSettings?: () => void;
+      onSubscription?: () => void;
       onPrivacySecurity?: () => void;
       onHelpSupport?: () => void;
       onLogout?: () => void;
 }
 
 const MenuSection: React.FC<MenuSectionProps> = ({
-      onEditProfile,
+      onViewAttendance,
       onChangePassword,
-      onNotificationSettings,
+      onSubscription,
       onPrivacySecurity,
       onHelpSupport,
       onLogout,
 }) => (
       <>
             <View style={styles.card}>
-                  <MenuRow icon="person-outline" label="Edit Profile" onPress={onEditProfile} />
+                  <MenuRow icon="person-outline" label="Attendance" onPress={onViewAttendance} />
                   <MenuRow
                         icon="lock-closed-outline"
                         label="Change Password"
@@ -69,23 +69,18 @@ const MenuSection: React.FC<MenuSectionProps> = ({
                   />
                   <MenuRow
                         icon="notifications-outline"
-                        label="Notification Settings"
-                        onPress={onNotificationSettings}
-                  />
-                  <MenuRow
-                        icon="shield-checkmark-outline"
-                        label="Privacy & Security"
-                        onPress={onPrivacySecurity}
+                        label="Subscription Plans"
+                        onPress={onSubscription}
                   />
                   <MenuRow
                         icon="help-circle-outline"
-                        label="Help & Support"
+                        label="Help & FAQs"
                         onPress={onHelpSupport}
                         isLast
                   />
             </View>
 
-            <View style={[styles.card, styles.logoutCard]}>
+            <View style={[styles.card, styles.logoutCard, { marginBottom: SPACING.md }]}>
                   <MenuRow
                         icon="log-out-outline"
                         label="Log Out"

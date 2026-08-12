@@ -5,6 +5,7 @@ import HealthRecordScreen from '../features/healthTrack/screens/HealthRecord';
 import HomeScreen from '../features/dashboard/HomeScreen';
 import CustomTabBar from '../components/customTabBar';
 import WebinarScreen from '../features/webinar/screens/LiveWebinar';
+import UserProfileScreen from '../profile/screens/UserProfile';
 
 const UserTabStack = createBottomTabNavigator<UserTabParamList>();
 
@@ -19,7 +20,7 @@ export default function UserTabNavigator() {
                   <UserTabStack.Screen name="Dashboard" component={UserDashboard} />
                   <UserTabStack.Screen name="HealthRecord" component={HealthRecordScreen} />
                   <UserTabStack.Screen name="Webinars" component={WebinarScreen} />
-                  <UserTabStack.Screen name="Profile" component={UserDashboard} />
+                  <UserTabStack.Screen name="Profile" component={UserProfileScreen} />
             </UserTabStack.Navigator>
       );
 }

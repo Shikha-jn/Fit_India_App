@@ -6,6 +6,8 @@ import TrainerTabNavigator from './TrainerTabNavigator';
 import { RootStackParamList } from '../types/RootStackParamList';
 import LoginScreen from '../auth/login/screens/LoginScreen';
 import RegisterScreen from '../auth/register/screens/RegisterScreen';
+import AttendanceScreen from '../features/attendance/screens/AttendanceScreen';
+import SubscriptionScreen from '../features/subscription/screens/Subscription';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -25,6 +27,8 @@ export default function AppNavigator() {
                         <Stack.Screen name="TrainerTab" component={TrainerTabNavigator} />
                         <Stack.Screen name="Login" component={LoginScreen} />
                         <Stack.Screen name="Register" component={RegisterScreen} />
+                        <Stack.Screen name="Attendance" component={AttendanceScreen} />
+                        <Stack.Screen name="Subscription" component={SubscriptionScreen} />
                   </Stack.Navigator>
             </NavigationContainer>
       );

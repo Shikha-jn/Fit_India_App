@@ -112,6 +112,8 @@ const WebinarCard: React.FC<WebinarCardProps> = ({ webinar, onPressCta }) => {
             participants,
             capacity,
             bannerImage,
+            discountedPrice,
+            originalPrice
       } = webinar;
 
       const isOngoing = status === 'ongoing';
@@ -156,6 +158,14 @@ const WebinarCard: React.FC<WebinarCardProps> = ({ webinar, onPressCta }) => {
                                     <Icon name="time-outline" size={14} color={COLORS.textMuted} />
                                     <Text style={styles.metaText}>{formatWebinarTime(scheduleTime)}</Text>
                               </View>
+                        </View>
+                        <View style={styles.metaRow}>
+                              <Text style={styles.metaText} numberOfLines={2}>
+                                    {discountedPrice}
+                              </Text>
+                              <Text style={styles.metaText} numberOfLines={2}>
+                                    {originalPrice}
+                              </Text>
                         </View>
 
                         {status !== 'cancelled' && (
@@ -220,7 +230,7 @@ const CardCta: React.FC<{ webinar: Webinar; onPress: () => void }> = ({
                         style={styles.gradientBtn}
                   >
                         <Icon name="bookmark-outline" size={16} color={COLORS.text} />
-                        <Text style={styles.gradientBtnText}>Reserve Your Seat</Text>
+                        <Text style={styles.gradientBtnText}>Pay & Register</Text>
                   </LinearGradient>
             </Pressable>
       );

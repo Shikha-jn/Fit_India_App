@@ -35,4 +35,5 @@ export interface HealthLogPayload {
       weight: number;
       periodsCycleStatus: PeriodsCycleStatus;
       notes: string;
+      date: string;
 }

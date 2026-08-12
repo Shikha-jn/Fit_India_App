@@ -27,9 +27,10 @@ import {
   FITNESS_GOALS,
   MEDICAL_CONDITIONS,
 } from '../types/register';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../types/RootStackParamList';
-import { useNavigation } from '@react-navigation/native';
+import { trainerRegister, clientRegister } from '../service/register.service';
+import { useAlert } from '../../../context/AlertContext';
 
 const INITIAL_STATE: RegisterFormState = {
   role: 'client',
@@ -47,13 +48,14 @@ const INITIAL_STATE: RegisterFormState = {
 
 type FormErrors = Partial<Record<keyof RegisterFormState, string>>;
 
-type RegisterScreenProps = NativeStackNavigationProp<
+type RegisterScreenProps = NativeStackScreenProps<
   RootStackParamList,
   'Register'
 >;
 
-const RegisterScreen: React.FC<RegisterScreenProps> = ({}) => {
-  const navigation = useNavigation<RegisterScreenProps>();
+const RegisterScreen = ({ navigation }: RegisterScreenProps) => {
+  // const navigation = useNavigation<RegisterScreenProps>();
+  const alert = useAlert();
   const [form, setForm] = useState<RegisterFormState>(INITIAL_STATE);
   const [errors, setErrors] = useState<FormErrors>({});
   const [showPassword, setShowPassword] = useState(false);
@@ -170,7 +172,34 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({}) => {
 
     try {
       setSubmitting(true);
-      await onRegister?.(payload);
+      const response =
+        form.role === 'client'
+          ? await clientRegister({
+            payload
+          })
+          : await trainerRegister({
+            payload
+          });
+
+      if (response.success) {
+        alert.show({
+          type: 'info',
+          title: 'Account created',
+          message: 'Please login',
+          buttons: [{ label: 'Ok', onPress: alert.dismiss, style: 'primary' }],
+        });
+        navigation.replace('Login');
+      } else {
+        alert.show({
+          type: 'info',
+          title: 'Account not created',
+          message: 'Please try again latter',
+          buttons: [
+            { label: 'Ok', onPress: alert.dismiss, style: 'secondary' },
+          ],
+        });
+      }
+
     } finally {
       setSubmitting(false);
     }

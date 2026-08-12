@@ -5,9 +5,12 @@ import { Trainer } from '../../profile/types/trainer';
 import { LinearGradient } from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
+import { CompositeScreenProps, } from '@react-navigation/native';
 import { TrainerTabParamList } from '../../types/TrainerTabParamList';
+import { MainTabParamList } from '../../types/MainTabParamList';
 import { trainerProfile } from '../../services/trainer.service';
 import { useAlert } from '../../context/AlertContext';
+import { useAuthStore } from '../../store/useAuthStore';
 
 interface StatCardProps {
       icon: string;
@@ -222,15 +225,12 @@ const ContactCard: React.FC<ContactCardProps> = ({ trainer }) => (
       </View>
 );
 
-// interface TrainerDashboardScreenProps {
-//       trainer: Trainer;
-// }
 
 type TrainerDashboardProps = NativeBottomTabScreenProps<TrainerTabParamList, 'Dashboard'>;
 
 export const TrainerDashboard = ({ navigation }: TrainerDashboardProps) => {
       const alert = useAlert();
-
+      const authRemove = useAuthStore((s) => s.removeAuth);
       const [trainer, setTrainer] = useState<Trainer>(null as unknown as Trainer); // Replace with actual trainer data fetching logic
 
       useEffect(() => {
@@ -246,6 +246,15 @@ export const TrainerDashboard = ({ navigation }: TrainerDashboardProps) => {
                   alert.error('Error', 'Failed to fetch trainer profile. Please try again later.');
             }
       }
+      const onLogout = async () => {
+            await authRemove();
+            alert.success('You are logged out');
+            // navigation.replace('MainTab', { screen: 'Home' });
+            //       navigation.getParent<NativeBottomTabScreenProps<MainTabParamList>>().reset({
+            //       index: 0,
+            //       routes: [{ name: 'Home' }],
+            //   });
+      }
       return (
             <>
                   <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
@@ -254,6 +263,11 @@ export const TrainerDashboard = ({ navigation }: TrainerDashboardProps) => {
                         contentContainerStyle={styles.content}
                         showsVerticalScrollIndicator={false}
                   >
+                        <View>
+                              <Pressable onPress={onLogout}>
+                                    <Icon name='' size={15} color={COLORS.goldDark} />
+                              </Pressable>
+                        </View>
                         <DashboardHeader trainer={trainer} />
                         <QuickStatsRow trainer={trainer} />
                         <BioCertificationCard trainer={trainer} />
@@ -268,7 +282,7 @@ export const TrainerDashboard = ({ navigation }: TrainerDashboardProps) => {
 const styles = StyleSheet.create({
       flex: {
             flex: 1,
-            backgroundColor: COLORS.backgroundLight,
+            backgroundColor: COLORS.background,
       },
       content: {
             paddingBottom: 40,
@@ -360,10 +374,10 @@ const styles = StyleSheet.create({
       },
       card: {
             flex: 1,
-            backgroundColor: COLORS.surfaceLight,
+            backgroundColor: COLORS.surfaceElevated,
             borderRadius: 20,
             borderWidth: 1,
-            borderColor: '#E4E4E7',
+            borderColor: COLORS.border,
             padding: 18,
       },
       iconRow: {
@@ -400,10 +414,10 @@ const styles = StyleSheet.create({
             fontWeight: '600',
       },
       biocard: {
-            backgroundColor: COLORS.surfaceLight,
+            backgroundColor: COLORS.surfaceElevated,
             borderRadius: 20,
             borderWidth: 1,
-            borderColor: '#E4E4E7',
+            borderColor: COLORS.border,
             padding: 20,
             marginHorizontal: 16,
             marginTop: 16,
@@ -426,7 +440,7 @@ const styles = StyleSheet.create({
       columnTitle: {
             fontSize: 14,
             fontWeight: '800',
-            color: '#18181B',
+            color: COLORS.textSecondary,
             marginBottom: 10,
       },
       chipWrap: {
@@ -484,10 +498,10 @@ const styles = StyleSheet.create({
             fontStyle: 'italic',
       },
       contactcard: {
-            backgroundColor: COLORS.surfaceLight,
+            backgroundColor: COLORS.surfaceElevated,
             borderRadius: 20,
             borderWidth: 1,
-            borderColor: '#E4E4E7',
+            borderColor: COLORS.border,
             padding: 20,
             marginHorizontal: 16,
             marginTop: 16,
@@ -522,7 +536,7 @@ const styles = StyleSheet.create({
       },
       divider: {
             height: 1,
-            backgroundColor: '#E4E4E7',
+            backgroundColor: COLORS.border,
             marginVertical: 12,
       },
 });

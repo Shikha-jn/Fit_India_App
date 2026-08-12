@@ -13,8 +13,8 @@ import { useAlert } from '../../context/AlertContext';
 import { formatShortDate, calculateBmi } from './components/bmi';
 import SectionHeader from './components/SectionHeader';
 import StatRow from './components/StatsRow';
-// import WorkoutsPreviewCard from '../components//WorkoutsPreviewCard';
-// import NutritionPreviewCard from '../components//NutritionPreviewCard';
+import WorkoutsPreviewCard from './components/WorkoutsPreviewCard';
+import NutritionPreviewCard from './components/NutrionPreviewCard';
 
 type UserDashboardProps = NativeBottomTabScreenProps<UserTabParamList, 'Dashboard'>;
 
@@ -178,7 +178,7 @@ export const defaultUser: UserData = {
       targetWeight: 0,
       medicalConditions: [],
       fitnessGoal: "",
-      assignedTrainer: "",
+      assignedTrainer: { _id: '', name: '', email: '', phone: '', specialization: [] },
       trialsUsed: false,
       attendance: [],
       webinarsRegistered: [],
@@ -198,17 +198,12 @@ const UserDashboard: React.FC<UserDashboardProps> = ({
       const alert = useAlert();
       useEffect(() => {
             fetchUserProfile();
-      });
+      }, []);
       const fetchUserProfile = async () => {
-            try {
-                  const response = await getClientProfile();
-                  const userData = response.data;
-                  console.log('User profile data:', userData);
-                  setUser(userData);
-            } catch (error) {
-                  console.log('Error');
-                  alert.error('Error in loading user data.Please try again latter!');
-            }
+            const response = await getClientProfile();
+            const userData = response.data;
+            console.log('User profile data:', userData);
+            setUser(userData);
       }
 
       const onMarkAttendance = async () => {
@@ -216,7 +211,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({
                   const response = await markAttendance();
                   const attendance = response.data;
                   if (attendance.success === 'true') {
-                        alert.success('Today attendance marked successfully');
+                        alert.confirm('Today attendance marked successfully');
                   } else {
                         alert.confirm(attendance.message);
                   }
@@ -253,14 +248,17 @@ const UserDashboard: React.FC<UserDashboardProps> = ({
                         </View>
 
                         <View style={styles.rowTwo}>
-                              {/* <WorkoutsPreviewCard
+                              <WorkoutsPreviewCard
                                     workoutPlan={user.workoutPlan}
-                                    onViewAll={onViewFullWorkoutPlan}
+                              // onViewAll={onViewFullWorkoutPlan}
                               />
-                              <NutritionPreviewCard
-                                    dietPlan={user.dietPlan}
-                                    onViewAll={onViewFullDietPlan}
-                              /> */}
+
+                        </View>
+                        <View style={styles.rowTwo}>
+                        <NutritionPreviewCard
+                              dietPlan={user.dietPlan}
+                        // onViewAll={onViewFullDietPlan}
+                        />
                         </View>
                   </ScrollView>
             </>
@@ -270,7 +268,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({
 const styles = StyleSheet.create({
       flex: {
             flex: 1,
-            backgroundColor: COLORS.backgroundLight,
+            backgroundColor: COLORS.background,
       },
       content: {
             paddingBottom: 40,
@@ -397,25 +395,25 @@ const styles = StyleSheet.create({
       //Stats styles
       card: {
             flex: 1,
-            backgroundColor: COLORS.surfaceLight,
+            backgroundColor: COLORS.surfaceElevated,
             borderRadius: 20,
             borderWidth: 1,
-            borderColor: '#E4E4E7',
+            borderColor: COLORS.border,
             padding: 18,
       },
       divider: {
             height: 1,
-            backgroundColor: '#E4E4E7',
+            backgroundColor: COLORS.border,
             marginTop: 4,
             marginBottom: 2,
       },
       //Medical card styles
       medcard: {
             flex: 1,
-            backgroundColor: '#FFFFFF',
+            backgroundColor: COLORS.surfaceElevated,
             borderRadius: 20,
             borderWidth: 1,
-            borderColor: '#E4E4E7',
+            borderColor: COLORS.border,
             padding: 18,
       },
       chipWrap: {

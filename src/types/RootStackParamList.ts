@@ -1,12 +1,18 @@
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { TrainerTabParamList } from "./TrainerTabParamList";
 import { UserTabParamList } from "./UserTabParamList";
+import { MainTabParamList } from "./MainTabParamList";
 
 export type RootStackParamList = {
       Splash: undefined;
       Login: undefined;
       Register: undefined;
-      MainTab: undefined;
+      MainTab: NavigatorScreenParams<MainTabParamList>;
       UserTab: NavigatorScreenParams<UserTabParamList>;
       TrainerTab: NavigatorScreenParams<TrainerTabParamList>;
+      Attendance: {
+            attendance: string[],
+            joinedDate: any
+      }
+      Subscription: undefined;
 }

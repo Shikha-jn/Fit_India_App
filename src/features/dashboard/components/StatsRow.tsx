@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
       label: {
             fontSize: 13.5,
             fontWeight: '600',
-            color: '#3F3F46',
+            color: COLORS.text,
       },
       labelEmphasize: {
             fontWeight: '800',
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
       value: {
             fontSize: 14,
             fontWeight: '800',
-            color: '#18181B',
+            color: COLORS.text,
       },
       valueEmphasize: {
             color: COLORS.primary,

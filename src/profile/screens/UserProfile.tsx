@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, StatusBar, View, Text, Image, Pressable } from 'react-native';
+import { ScrollView, StyleSheet, StatusBar, View, Text, Image, Pressable, Linking } from 'react-native';
 import { COLORS, SPACING, TYPOGRAPHY, RADII } from '../../theme/theme';
 
 import { UserData } from '../types/user';
@@ -13,8 +13,15 @@ import { LinearGradient } from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
 import { UserTabParamList } from '../../types/UserTabParamList';
+import { CompositeScreenProps, } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../types/RootStackParamList';
+import { useAuthStore } from '../../store/useAuthStore';
+import { useAlert } from '../../context/AlertContext';
+import { MainTabParamList } from '../../types/MainTabParamList';
 
-type UserProfileProps = NativeBottomTabScreenProps<UserTabParamList, 'Profile'>;
+type UserProfileProps = CompositeScreenProps<NativeBottomTabScreenProps<UserTabParamList, 'Profile'>,
+      NativeStackScreenProps<RootStackParamList>>;
 
 const demoData: UserData = {
       _id: "demo-client-id",
@@ -82,28 +89,31 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({ user, onEditPress }) => {
                         style={styles.banner}
                   >
                         <View style={styles.glow} />
-                        <Pressable onPress={onEditPress} style={styles.editBtn}>
-                              <Icon name="create-outline" size={16} color={COLORS.text} />
-                        </Pressable>
-                  </LinearGradient>
+                        <View style={{ flex: 1, flexDirection: 'row' }}>
+                              <Pressable onPress={onEditPress} style={styles.editBtn}>
+                                    <Icon name="create-outline" size={16} color={COLORS.text} />
+                              </Pressable>
 
-                  <View style={styles.avatarWrap}>
-                        {user.profileImage ? (
-                              <Image source={{ uri: user.profileImage }} style={styles.avatar} />
-                        ) : (
-                              <View style={[styles.avatar, styles.avatarFallback]}>
-                                    <Text style={styles.avatarInitial}>
-                                          {user.name.charAt(0).toUpperCase()}
-                                    </Text>
+
+                              <View style={styles.avatarWrap}>
+                                    {user.profileImage ? (
+                                          <Image source={{ uri: user.profileImage }} style={styles.avatar} />
+                                    ) : (
+                                          <View style={[styles.avatar, styles.avatarFallback]}>
+                                                <Text style={styles.avatarInitial}>
+                                                      {user.name.charAt(0).toUpperCase()}
+                                                </Text>
+                                          </View>
+                                    )}
+                                    <View
+                                          style={[
+                                                styles.statusDot,
+                                                { backgroundColor: isActive ? COLORS.success : COLORS.textMuted },
+                                          ]}
+                                    />
                               </View>
-                        )}
-                        <View
-                              style={[
-                                    styles.statusDot,
-                                    { backgroundColor: isActive ? COLORS.success : COLORS.textMuted },
-                              ]}
-                        />
-                  </View>
+                        </View>
+                  </LinearGradient>
 
                   <View style={styles.infoBlock}>
                         <Text style={styles.name}>{user.name}</Text>
@@ -237,6 +247,8 @@ const GoalAndConditionsCard: React.FC<GoalAndConditionsCardProps> = ({ user }) =
 
 const UserProfileScreen = ({ navigation }: UserProfileProps) => {
       const [user, setuser] = useState<UserData>(demoData);
+      const authRemove = useAuthStore((s) => s.removeAuth);
+      const alert = useAlert();
 
       useEffect(() => {
             fetchuserProfile();
@@ -247,22 +259,42 @@ const UserProfileScreen = ({ navigation }: UserProfileProps) => {
             const client = response.data;
             setuser(client)
       }
-      const onEditProfile = () => {
-
+      const onEditProfile = () => { }
+      const onViewAttendance = () => {
+            navigation.navigate('Attendance', { attendance: user.attendance, joinedDate: user.createdAt });
       }
       const onChangePassword = () => {
 
       }
-      const onNotificationSettings = () => {
-
+      const onSubscription = () => {
+            navigation.navigate('Subscription');
       }
       const onPrivacySecurity = () => {
 
       }
-      const onLogout = () => {
-
+      const onLogout = async () => {
+            await authRemove();
+            alert.success('You are logged out');
+            navigation.replace('MainTab', { screen: 'Home' });
+            //       navigation.getParent<NativeBottomTabScreenProps<MainTabParamList>>().reset({
+            //       index: 0,
+            //       routes: [{ name: 'Home' }],
+            //   });
       }
-      const onHelpSupport = () => { }
+      const onHelpSupport = async () => {
+            try {
+                  const url = 'https://fit-india-sable.vercel.app/';
+                  const supported = await Linking.canOpenURL(url);
+
+                  if (supported) {
+                        await Linking.openURL(url);
+                  } else {
+                        alert.error('Error', 'Unable to open the link.');
+                  }
+            } catch (error) {
+                  alert.error('Error', 'Something went wrong while opening the link.');
+            }
+      }
       return (
             <>
                   <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
@@ -277,12 +309,12 @@ const UserProfileScreen = ({ navigation }: UserProfileProps) => {
                         <ActivePlanCard user={user} />
                         <ActivitySnapshotCard user={user} trainer={user?.assignedTrainer} />
                         <MenuSection
-                              onEditProfile={onEditProfile}
+                              onViewAttendance={onViewAttendance}
                               onChangePassword={onChangePassword}
-                              onNotificationSettings={onNotificationSettings}
-                              onPrivacySecurity={onPrivacySecurity}
+                              onSubscription={onSubscription}
                               onHelpSupport={onHelpSupport}
                               onLogout={onLogout}
+                              // onPrivacySecurity={onPrivacySecurity}
                         />
                   </ScrollView>
             </>
@@ -299,7 +331,7 @@ const styles = StyleSheet.create({
             paddingBottom: 48,
       },
       container: {
-            marginBottom: AVATAR_SIZE / 2 + SPACING.sm,
+            // marginBottom: AVATAR_SIZE / 2 + SPACING.sm,
       },
       banner: {
             height: 128,
@@ -329,7 +361,7 @@ const styles = StyleSheet.create({
       },
       avatarWrap: {
             position: 'absolute',
-            top: 128 - AVATAR_SIZE / 2,
+            top: 70 - AVATAR_SIZE / 2,
             left: SPACING.lg,
             width: AVATAR_SIZE,
             height: AVATAR_SIZE,

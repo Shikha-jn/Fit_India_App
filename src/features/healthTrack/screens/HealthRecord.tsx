@@ -118,7 +118,7 @@ const HealthRecordScreen = ({ navigation }: HealthRecordScreenProps) => {
 
       useEffect(() => {
             fetchHealthRecords();
-      });
+      }, []);
 
       const fetchHealthRecords = async () => {
             const response = await getHealthRecord();
@@ -129,8 +129,9 @@ const HealthRecordScreen = ({ navigation }: HealthRecordScreenProps) => {
       const onSaveLog = async (healthrecord: any) => {
             try {
                   const response = await addHealthRecord(healthrecord);
-                  if (response.data.success) {
+                  if (response.success) {
                         alert.success('Health record added successfully');
+                        fetchHealthRecords();
                   }
             } finally {
                   // navigation.goBack();

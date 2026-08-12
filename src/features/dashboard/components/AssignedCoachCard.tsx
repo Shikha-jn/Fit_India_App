@@ -44,10 +44,10 @@ const AssignedCoachCard: React.FC<AssignedCoachCardProps> = ({ coach }) => (
 const styles = StyleSheet.create({
       card: {
             flex: 1,
-            backgroundColor: '#FFFFFF',
+            backgroundColor: COLORS.surfaceElevated,
             borderRadius: 20,
             borderWidth: 1,
-            borderColor: '#E4E4E7',
+            borderColor: COLORS.border,
             padding: 18,
             justifyContent: 'space-between',
       },
@@ -75,22 +75,22 @@ const styles = StyleSheet.create({
       coachName: {
             fontSize: 14.5,
             fontWeight: '800',
-            color: '#18181B',
+            color: COLORS.text,
             marginBottom: 2,
       },
       coachSpecialization: {
             fontSize: 12,
-            color: '#71717A',
+            color: COLORS.textMuted,
             fontWeight: '600',
       },
       contactRow: {
             paddingTop: 12,
             borderTopWidth: 1,
-            borderTopColor: '#E4E4E7',
+            borderTopColor: COLORS.textSecondary,
       },
       contactText: {
             fontSize: 12,
-            color: '#71717A',
+            color: COLORS.textSecondary,
             fontWeight: '600',
       },
       emptyText: {
