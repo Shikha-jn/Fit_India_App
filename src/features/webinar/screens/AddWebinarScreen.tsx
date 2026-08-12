@@ -1,10 +1,30 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, StatusBar, KeyboardAvoidingView, Platform, View, Text, TextInput, Pressable, Image } from 'react-native';
+import { ScrollView, StyleSheet, StatusBar, KeyboardAvoidingView, Platform, View, Text, TextInput, Pressable, Image, ActivityIndicator, TextInputProps } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { COLORS, SPACING, TYPOGRAPHY, RADII } from '../../../theme/theme';
 import { ScheduleWebinarPayload } from '../types/webinar';
-import ScheduleWebinarForm from '../components/sections/ScheduleWebinarForm';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../types/RootStackParamList';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { useAlert } from '../../../context/AlertContext';
+import { scheduleWebinar } from '../../../services/trainer.service';
 
+type ScheduleWebinarScreenProps = NativeStackScreenProps<RootStackParamList, 'ScheduleWebinar'>;
+
+export function parseScheduleDateTime(value: string): string | null {
+      const match = value.match(/^(\d{2})-(\d{2})-(\d{4}) (\d{2}):(\d{2})$/);
+      if (!match) return null;
+
+      const [, dd, mm, yyyy, hh, min] = match;
+      const date = new Date(
+            Number(yyyy),
+            Number(mm) - 1,
+            Number(dd),
+            Number(hh),
+            Number(min),
+      );
+      return Number.isNaN(date.getTime()) ? null : date.toISOString();
+}
 interface ScheduleDateTimeFieldProps {
       label: string;
       value: string;
@@ -96,11 +116,52 @@ const BannerImageField: React.FC<BannerImageFieldProps> = ({ value, onChangeText
       );
 };
 
-interface ScheduleWebinarFormProps {
-      onSchedule?: (payload: ScheduleWebinarPayload) => Promise<void> | void;
+interface FormFieldProps extends TextInputProps {
+      label: string;
+      containerStyle?: object;
 }
 
-const ScheduleWebinarForm: React.FC<ScheduleWebinarFormProps> = ({ onSchedule }) => {
+const FormField: React.FC<FormFieldProps> = ({
+      label,
+      containerStyle,
+      style,
+      multiline,
+      ...rest
+}) => {
+      const [focused, setFocused] = useState(false);
+
+      return (
+            <View style={[styles.formcontainer, containerStyle]}>
+                  <Text style={styles.formlabel}>{label}</Text>
+                  <TextInput
+                        placeholderTextColor={COLORS.textMuted}
+                        multiline={multiline}
+                        style={[
+                              styles.forminput,
+                              multiline && styles.inputMultiline,
+                              focused && styles.inputFocused,
+                              style,
+                        ]}
+                        onFocus={(e) => {
+                              setFocused(true);
+                              rest.onFocus?.(e);
+                        }}
+                        onBlur={(e) => {
+                              setFocused(false);
+                              rest.onBlur?.(e);
+                        }}
+                        {...rest}
+                  />
+            </View>
+      );
+};
+
+interface ScheduleWebinarFormProps {
+      // onSchedule?: (payload: ScheduleWebinarPayload) => Promise<void> | void;
+      navigation: any;
+}
+
+const ScheduleWebinarForm: React.FC<ScheduleWebinarFormProps> = ({ navigation }) => {
       const [title, setTitle] = useState('');
       const [description, setDescription] = useState('');
       const [scheduleInput, setScheduleInput] = useState('');
@@ -110,16 +171,22 @@ const ScheduleWebinarForm: React.FC<ScheduleWebinarFormProps> = ({ onSchedule })
       const [meetingLink, setMeetingLink] = useState('');
       const [bannerImage, setBannerImage] = useState('');
       const [saving, setSaving] = useState(false);
+      const alert = useAlert();
+
+      const onSchedule = (webinar: any) => {
+            const response = scheduleWebinar(webinar);
+
+      }
 
       const handleSchedule = async () => {
             if (!title.trim()) {
-                  Alert.alert('Webinar title required', 'Give this live panel a title.');
+                  alert.warning('Webinar title required', 'Give this live panel a title.');
                   return;
             }
 
             const scheduleTime = parseScheduleDateTime(scheduleInput);
             if (!scheduleTime) {
-                  Alert.alert(
+                  alert.warning(
                         'Invalid date & time',
                         'Enter the schedule as dd-mm-yyyy followed by a 24-hour time, e.g. 14-08-2026 19:30.',
                   );
@@ -127,7 +194,7 @@ const ScheduleWebinarForm: React.FC<ScheduleWebinarFormProps> = ({ onSchedule })
             }
 
             if (!meetingLink.trim()) {
-                  Alert.alert('Meeting link required', 'Add the virtual meeting link for this panel.');
+                  alert.warning('Meeting link required', 'Add the virtual meeting link for this panel.');
                   return;
             }
 
@@ -153,6 +220,7 @@ const ScheduleWebinarForm: React.FC<ScheduleWebinarFormProps> = ({ onSchedule })
                   setDiscountedPrice('');
                   setMeetingLink('');
                   setBannerImage('');
+                  navigation.goBack();
             } finally {
                   setSaving(false);
             }
@@ -241,28 +309,29 @@ const ScheduleWebinarForm: React.FC<ScheduleWebinarFormProps> = ({ onSchedule })
       );
 };
 
-interface ScheduleWebinarScreenProps {
-      onSchedule?: (payload: ScheduleWebinarPayload) => Promise<void> | void;
-}
+// interface ScheduleWebinarScreenProps {
+//       onSchedule?: (payload: ScheduleWebinarPayload) => Promise<void> | void;
+// }
 
-const ScheduleWebinarScreen: React.FC<ScheduleWebinarScreenProps> = ({
-      onSchedule,
-}) => (
-      <KeyboardAvoidingView
-            style={styles.flex}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-            <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
-            <ScrollView
+const ScheduleWebinarScreen = ({ navigation }: ScheduleWebinarScreenProps) => {
+      const onSchedule = () => { }
+      return (
+            <KeyboardAvoidingView
                   style={styles.flex}
-                  contentContainerStyle={styles.content}
-                  showsVerticalScrollIndicator={false}
-                  keyboardShouldPersistTaps="handled"
+                  behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             >
-                  <ScheduleWebinarForm onSchedule={onSchedule} />
-            </ScrollView>
-      </KeyboardAvoidingView>
-);
+                  <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
+                  <ScrollView
+                        style={styles.flex}
+                        contentContainerStyle={styles.content}
+                        showsVerticalScrollIndicator={false}
+                        keyboardShouldPersistTaps="handled"
+                  >
+                        <ScheduleWebinarForm navigation={navigation} />
+                  </ScrollView>
+            </KeyboardAvoidingView>
+      );
+}
 
 const styles = StyleSheet.create({
       flex: {
@@ -409,6 +478,42 @@ const styles = StyleSheet.create({
             height: 140,
             borderRadius: RADII.md + 2,
             marginTop: SPACING.sm + 4,
+      },
+      formcontainer: {
+            flex: 1,
+            marginBottom: SPACING.lg - 4,
+      },
+      formlabel: {
+            fontSize: 11,
+            fontWeight: TYPOGRAPHY.extraBold,
+            letterSpacing: 0.5,
+            textTransform: 'uppercase',
+            color: COLORS.text,
+            marginBottom: SPACING.sm,
+      },
+      forminput: {
+            backgroundColor: COLORS.surface,
+            borderRadius: RADII.md + 2,
+            borderWidth: 1,
+            borderColor: COLORS.border,
+            paddingHorizontal: SPACING.md,
+            height: 50,
+            color: COLORS.text,
+            fontSize: 14,
+            fontWeight: TYPOGRAPHY.medium,
+      },
+      inputMultiline: {
+            height: 100,
+            paddingTop: SPACING.sm + 4,
+            textAlignVertical: 'top',
+      },
+      inputFocused: {
+            borderColor: COLORS.gold,
+            shadowColor: COLORS.gold,
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.35,
+            shadowRadius: 8,
+            elevation: 4,
       },
 });
 

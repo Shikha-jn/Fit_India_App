@@ -11,6 +11,8 @@ import { MainTabParamList } from '../../types/MainTabParamList';
 import { trainerProfile } from '../../services/trainer.service';
 import { useAlert } from '../../context/AlertContext';
 import { useAuthStore } from '../../store/useAuthStore';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../types/RootStackParamList';
 
 interface StatCardProps {
       icon: string;
@@ -226,7 +228,8 @@ const ContactCard: React.FC<ContactCardProps> = ({ trainer }) => (
 );
 
 
-type TrainerDashboardProps = NativeBottomTabScreenProps<TrainerTabParamList, 'Dashboard'>;
+type TrainerDashboardProps = CompositeScreenProps<NativeBottomTabScreenProps<TrainerTabParamList, 'Dashboard'>,
+      NativeStackScreenProps<RootStackParamList>>;
 
 export const TrainerDashboard = ({ navigation }: TrainerDashboardProps) => {
       const alert = useAlert();
@@ -249,7 +252,7 @@ export const TrainerDashboard = ({ navigation }: TrainerDashboardProps) => {
       const onLogout = async () => {
             await authRemove();
             alert.success('You are logged out');
-            // navigation.replace('MainTab', { screen: 'Home' });
+            navigation.replace('MainTab', { screen: 'Home' });
             //       navigation.getParent<NativeBottomTabScreenProps<MainTabParamList>>().reset({
             //       index: 0,
             //       routes: [{ name: 'Home' }],

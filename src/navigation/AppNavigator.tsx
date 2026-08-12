@@ -8,6 +8,8 @@ import LoginScreen from '../auth/login/screens/LoginScreen';
 import RegisterScreen from '../auth/register/screens/RegisterScreen';
 import AttendanceScreen from '../features/attendance/screens/AttendanceScreen';
 import SubscriptionScreen from '../features/subscription/screens/Subscription';
+import ScheduleWebinarScreen from '../features/webinar/screens/AddWebinarScreen';
+import SplashScreen from '../screens/SplashScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -15,7 +17,7 @@ export default function AppNavigator() {
       return (
             <NavigationContainer>
                   <Stack.Navigator
-                        // initialRouteName="Splash"
+                        initialRouteName="Splash"
                         screenOptions={{
                               headerShown: false,
                               statusBarStyle: 'light',
@@ -29,6 +31,7 @@ export default function AppNavigator() {
                         <Stack.Screen name="Register" component={RegisterScreen} />
                         <Stack.Screen name="Attendance" component={AttendanceScreen} />
                         <Stack.Screen name="Subscription" component={SubscriptionScreen} />
+                        <Stack.Screen name='ScheduleWebinar' component={ScheduleWebinarScreen} />
                   </Stack.Navigator>
             </NavigationContainer>
       );

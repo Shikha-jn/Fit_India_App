@@ -15,4 +15,5 @@ export type RootStackParamList = {
             joinedDate: any
       }
       Subscription: undefined;
+      ScheduleWebinar: undefined;
 }

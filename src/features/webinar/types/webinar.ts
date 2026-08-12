@@ -38,3 +38,14 @@ export interface Trainer {
 }
 
 export type WebinarFilter = 'all' | WebinarStatus
+
+export interface ScheduleWebinarPayload {
+  title: string;
+  description: string;
+  scheduleTime: string; // ISO string
+  capacity: number;
+  originalPrice: number;
+  discountedPrice: number;
+  meetingLink: string;
+  bannerImage: string;
+}

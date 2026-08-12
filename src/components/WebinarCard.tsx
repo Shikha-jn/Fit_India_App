@@ -4,6 +4,8 @@ import { LinearGradient } from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../theme/theme';
 import { Webinar, WebinarStatus } from '../features/webinar/types/webinar';
+import { cancelWebinar } from '../services/trainer.service';
+import { useAlert } from '../context/AlertContext';
 
 import {
       formatWebinarDate,
@@ -97,12 +99,13 @@ const CapacityBar: React.FC<CapacityBarProps> = ({ filled, capacity }) => {
 interface WebinarCardProps {
       webinar: Webinar;
       onPressCta?: (webinar: Webinar) => void;
+      role?: string
 }
 
 const FALLBACK_BANNER =
       'https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=800&q=80';
 
-const WebinarCard: React.FC<WebinarCardProps> = ({ webinar, onPressCta }) => {
+const WebinarCard: React.FC<WebinarCardProps> = ({ webinar, onPressCta, role }) => {
       const {
             title,
             description,
@@ -117,6 +120,14 @@ const WebinarCard: React.FC<WebinarCardProps> = ({ webinar, onPressCta }) => {
       } = webinar;
 
       const isOngoing = status === 'ongoing';
+      const alert = useAlert();
+
+      const onCancel = async () => {
+            const response = await cancelWebinar(webinar);
+            if (response.success) {
+                  alert.success('Webinar canclled');
+            }
+      }
 
       return (
             <View style={[styles.card, isOngoing && styles.cardOngoing]}>
@@ -171,8 +182,14 @@ const WebinarCard: React.FC<WebinarCardProps> = ({ webinar, onPressCta }) => {
                         {status !== 'cancelled' && (
                               <CapacityBar filled={participants.length} capacity={capacity} />
                         )}
-
-                        <CardCta webinar={webinar} onPress={() => onPressCta?.(webinar)} />
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
+                              <CardCta webinar={webinar} onPress={() => onPressCta?.(webinar)} />
+                              {role === 'trainer' ? (
+                                    <Pressable onPress={onCancel}>
+                                          <Text>Cancel</Text>
+                                    </Pressable>
+                              ) : (null)}
+                        </View>
                   </View>
             </View>
       );
