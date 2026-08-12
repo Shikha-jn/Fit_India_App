@@ -268,7 +268,7 @@ export const TrainerDashboard = ({ navigation }: TrainerDashboardProps) => {
                   >
                         <View>
                               <Pressable onPress={onLogout}>
-                                    <Icon name='' size={15} color={COLORS.goldDark} />
+                                    <Icon name='log-out-outline' size={15} color={COLORS.goldDark} />
                               </Pressable>
                         </View>
                         <DashboardHeader trainer={trainer} />
