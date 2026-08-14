@@ -2,6 +2,8 @@ import { useAuthStore } from "../store/useAuthStore";
 import { ApiError } from "../types/ApiError";
 import axios from "axios";
 
+export const RAZORPAY_KEY = 'rzp_test_SzRBgNqSTAHvYZ';
+
 const BASE_URL = 'https://api.fiwm.in/api/'
 
 export const publicClient = axios.create({

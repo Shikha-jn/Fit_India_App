@@ -10,6 +10,7 @@ import AttendanceScreen from '../features/attendance/screens/AttendanceScreen';
 import SubscriptionScreen from '../features/subscription/screens/Subscription';
 import ScheduleWebinarScreen from '../features/webinar/screens/AddWebinarScreen';
 import SplashScreen from '../screens/SplashScreen';
+import ClientDetailScreen from '../features/clientDirectory/screens/ClientDetailScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -32,6 +33,7 @@ export default function AppNavigator() {
                         <Stack.Screen name="Attendance" component={AttendanceScreen} />
                         <Stack.Screen name="Subscription" component={SubscriptionScreen} />
                         <Stack.Screen name='ScheduleWebinar' component={ScheduleWebinarScreen} />
+                        <Stack.Screen name="ClientDetail" component={ClientDetailScreen} />
                   </Stack.Navigator>
             </NavigationContainer>
       );

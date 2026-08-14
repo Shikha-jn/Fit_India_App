@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, StatusBar, View, Text, Image, Pressable, Linking } from 'react-native';
+import { ScrollView, StyleSheet, StatusBar, View, Text, Image, Pressable, Linking, RefreshControl } from 'react-native';
 import { COLORS } from '../../theme/theme';
 import { Trainer } from '../../profile/types/trainer';
 import { LinearGradient } from 'react-native-linear-gradient';
@@ -25,7 +25,7 @@ const StatCard: React.FC<StatCardProps> = ({ icon, label, value, caption }) => (
       <View style={styles.card}>
             <View style={styles.iconRow}>
                   <View style={styles.iconCircle}>
-                        <Icon name={icon} size={15} color={COLORS.primary} />
+                        <Icon name={icon} size={15} color={COLORS.goldDark} />
                   </View>
                   <Text style={styles.label}>{label}</Text>
             </View>
@@ -204,7 +204,7 @@ const ContactCard: React.FC<ContactCardProps> = ({ trainer }) => (
                   onPress={() => Linking.openURL(`mailto:${trainer?.email}`).catch(() => { })}
             >
                   <View style={styles.coniconCircle}>
-                        <Icon name="mail-outline" size={15} color={COLORS.primary} />
+                        <Icon name="mail-outline" size={15} color={COLORS.goldDark} />
                   </View>
                   <Text style={styles.rowText} numberOfLines={1}>
                         {trainer?.email}
@@ -218,8 +218,8 @@ const ContactCard: React.FC<ContactCardProps> = ({ trainer }) => (
                   style={styles.conrow}
                   onPress={() => Linking.openURL(`tel:${trainer?.phone}`).catch(() => { })}
             >
-                  <View style={styles.iconCircle}>
-                        <Icon name="call-outline" size={15} color={COLORS.primary} />
+                  <View style={styles.coniconCircle}>
+                        <Icon name="call-outline" size={15} color={COLORS.goldDark} />
                   </View>
                   <Text style={styles.rowText}>{trainer?.phone}</Text>
                   <Icon name="chevron-forward" size={16} color={COLORS.textMuted} />
@@ -233,6 +233,7 @@ type TrainerDashboardProps = NativeBottomTabScreenProps<TrainerTabParamList, 'Da
 export const TrainerDashboard = ({ navigation }: TrainerDashboardProps) => {
       const rootNav = navigation.getParent<NativeStackNavigationProp<RootStackParamList>>();
       const alert = useAlert();
+      const [refreshing, setrefreshing] = useState(false);
       const authRemove = useAuthStore((s) => s.removeAuth);
       const [trainer, setTrainer] = useState<Trainer>(null as unknown as Trainer); // Replace with actual trainer data fetching logic
 
@@ -240,23 +241,22 @@ export const TrainerDashboard = ({ navigation }: TrainerDashboardProps) => {
             fetchTrainerProfile();
       }, []);
       const fetchTrainerProfile = async () => {
+            const response = await trainerProfile();
+            const profileData = response.data;
+            setTrainer(profileData);
+      }
+      const onRefresh = () => {
             try {
-                  const response = await trainerProfile();
-                  const profileData = response.data;
-                  setTrainer(profileData);
-            } catch (error) {
-                  console.error('Error fetching trainer profile:', error);
-                  alert.error('Error', 'Failed to fetch trainer profile. Please try again later.');
+                  setrefreshing(true);
+                  fetchTrainerProfile();
+            } finally {
+                  setrefreshing(false);
             }
       }
       const onLogout = async () => {
             await authRemove();
             alert.success('You are logged out');
-            rootNav.replace('MainTab', {screen: 'Home'})
-            //       navigation.getParent<NativeBottomTabScreenProps<MainTabParamList>>().reset({
-            //       index: 0,
-            //       routes: [{ name: 'Home' }],
-            //   });
+            rootNav.replace('MainTab', { screen: 'Home' })
       }
       return (
             <>
@@ -265,11 +265,25 @@ export const TrainerDashboard = ({ navigation }: TrainerDashboardProps) => {
                         style={styles.flex}
                         contentContainerStyle={styles.content}
                         showsVerticalScrollIndicator={false}
+                        refreshControl={
+                              <RefreshControl
+                                    refreshing={refreshing}
+                                    onRefresh={onRefresh}
+                                    tintColor={COLORS.gold}
+                                    colors={[COLORS.primary]}
+                              />
+                        }
                   >
-                        <View>
+                        <View style={{
+                              marginHorizontal: 16,
+                              marginTop: 16,
+                              flexDirection: 'row',
+                              justifyContent: 'space-between'
+                        }}>
                               <Pressable onPress={onLogout}>
-                                    <Icon name='log-out-outline' size={15} color={COLORS.goldDark} />
+                                    <Icon name='log-out-outline' size={25} color={COLORS.goldDark} />
                               </Pressable>
+                              <Icon name='notifications-outline' size={25} color={COLORS.goldDark} />
                         </View>
                         <DashboardHeader trainer={trainer} />
                         <QuickStatsRow trainer={trainer} />
@@ -377,7 +391,7 @@ const styles = StyleSheet.create({
       },
       card: {
             flex: 1,
-            backgroundColor: COLORS.surfaceElevated,
+            backgroundColor: COLORS.surface,
             borderRadius: 20,
             borderWidth: 1,
             borderColor: COLORS.border,
@@ -392,7 +406,7 @@ const styles = StyleSheet.create({
             width: 28,
             height: 28,
             borderRadius: 9,
-            backgroundColor: 'rgba(166, 24, 82, 0.1)',
+            // backgroundColor: 'rgba(166, 24, 82, 0.1)',
             alignItems: 'center',
             justifyContent: 'center',
             marginRight: 8,
@@ -413,11 +427,11 @@ const styles = StyleSheet.create({
       },
       caption: {
             fontSize: 11.5,
-            color: '#71717A',
+            color: COLORS.text,
             fontWeight: '600',
       },
       biocard: {
-            backgroundColor: COLORS.surfaceElevated,
+            backgroundColor: COLORS.surface,
             borderRadius: 20,
             borderWidth: 1,
             borderColor: COLORS.border,
@@ -472,7 +486,7 @@ const styles = StyleSheet.create({
             fontWeight: '800',
       },
       avacard: {
-            backgroundColor: COLORS.surfaceElevated,
+            backgroundColor: COLORS.surface,
             borderRadius: 20,
             borderWidth: 1,
             borderColor: COLORS.border,
@@ -498,16 +512,17 @@ const styles = StyleSheet.create({
       avaemptyText: {
             fontSize: 12,
             color: COLORS.textMuted,
-            fontStyle: 'italic',
+            fontStyle: 'normal',
       },
       contactcard: {
-            backgroundColor: COLORS.surfaceElevated,
+            backgroundColor: COLORS.surface,
             borderRadius: 20,
             borderWidth: 1,
             borderColor: COLORS.border,
             padding: 20,
             marginHorizontal: 16,
             marginTop: 16,
+            marginBottom: 45,
       },
       conheader: {
             fontSize: 10.5,
@@ -520,13 +535,13 @@ const styles = StyleSheet.create({
       conrow: {
             flexDirection: 'row',
             alignItems: 'center',
-            paddingVertical: 4,
+            // paddingVertical: 4,
       },
       coniconCircle: {
             width: 32,
             height: 32,
             borderRadius: 10,
-            backgroundColor: 'rgba(166, 24, 82, 0.1)',
+            // backgroundColor: 'rgba(166, 24, 82, 0.1)',
             alignItems: 'center',
             justifyContent: 'center',
             marginRight: 12,
@@ -535,7 +550,7 @@ const styles = StyleSheet.create({
             flex: 1,
             fontSize: 13.5,
             fontWeight: '700',
-            color: '#18181B',
+            color: COLORS.text,
       },
       divider: {
             height: 1,

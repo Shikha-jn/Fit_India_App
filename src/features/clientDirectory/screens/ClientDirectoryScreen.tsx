@@ -16,11 +16,14 @@ import { Client, ClientStatusFilter } from '../types/clientDirectory';
 import { LinearGradient } from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
+import { CompositeScreenProps, } from '@react-navigation/native';
 
 import { getPlanExpiryInfo } from '../types/PlanExpire';
 import { TrainerTabParamList } from '../../../types/TrainerTabParamList';
 import { useAlert } from '../../../context/AlertContext';
 import { getClients } from '../../../services/trainer.service';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../types/RootStackParamList';
 
 interface FilterOption {
       value: ClientStatusFilter;
@@ -178,15 +181,19 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
 
 interface ClientCardProps {
       client: Client;
-      onOpenWorkspace?: (client: Client) => void;
+      navigation: any;
 }
 
 const MAX_VISIBLE_CONDITIONS = 3;
 
-const ClientCard: React.FC<ClientCardProps> = ({ client, onOpenWorkspace }) => {
+const ClientCard: React.FC<ClientCardProps> = ({ client, navigation }) => {
       const expiry = getPlanExpiryInfo(client.activePlanExpiresAt);
       const visibleConditions = client.medicalConditions.slice(0, MAX_VISIBLE_CONDITIONS);
       const extraConditions = client.medicalConditions.length - visibleConditions.length;
+
+      const onOpenWorkspace = () => {
+            navigation.navigate('ClientDetail', { client: client });
+      }
 
       return (
             <View style={styles.card}>
@@ -240,7 +247,7 @@ const ClientCard: React.FC<ClientCardProps> = ({ client, onOpenWorkspace }) => {
                   )}
 
                   <Pressable
-                        onPress={() => onOpenWorkspace?.(client)}
+                        onPress={onOpenWorkspace}
                         style={styles.workspaceBtn}
                   >
                         <Text style={styles.workspaceBtnText}>Open Member Workspace</Text>
@@ -250,19 +257,11 @@ const ClientCard: React.FC<ClientCardProps> = ({ client, onOpenWorkspace }) => {
       );
 };
 
-// interface ClientDirectoryScreenProps {
-//       clients: Client[];
-//       loading?: boolean;
-//       refreshing?: boolean;
-//       onRefresh?: () => void;
-//       onOpenWorkspace?: (client: Client) => void;
-// }
+type ClientDirectoryScreenProps = CompositeScreenProps<
+      NativeBottomTabScreenProps<TrainerTabParamList, 'ClientDirectory'>,
+      NativeStackScreenProps<RootStackParamList>>;
 
-type ClientDirectoryScreenProps = NativeBottomTabScreenProps<TrainerTabParamList, 'ClientDirectory'>;
-
-const ClientDirectoryScreen: React.FC<ClientDirectoryScreenProps> = ({
-
-}) => {
+const ClientDirectoryScreen = ({ navigation }: ClientDirectoryScreenProps) => {
       const [clients, setClients] = useState<Client[]>([]);
       const [refreshing, setrefreshing] = useState(false);
       const [loading, setloading] = useState(false);
@@ -293,10 +292,12 @@ const ClientDirectoryScreen: React.FC<ClientDirectoryScreenProps> = ({
       }
 
       const onRefresh = () => {
-
-      }
-      const onOpenWorkspace = () => {
-
+            try {
+                  setrefreshing(true);
+                  fetchClientsData();
+            } finally {
+                  setrefreshing(false);
+            }
       }
 
       const filtered = useMemo(() => {
@@ -351,7 +352,7 @@ const ClientDirectoryScreen: React.FC<ClientDirectoryScreenProps> = ({
                         }
                         renderItem={({ item }) => (
                               <View style={styles.cardWrap}>
-                                    <ClientCard client={item} onOpenWorkspace={onOpenWorkspace} />
+                                    <ClientCard client={item} navigation={navigation} />
                               </View>
                         )}
                         ListEmptyComponent={
@@ -476,10 +477,10 @@ const styles = StyleSheet.create({
       },
       //Card styles
       card: {
-            backgroundColor: COLORS.surfaceLight,
+            backgroundColor: COLORS.surface,
             borderRadius: 22,
             borderWidth: 1,
-            borderColor: '#E4E4E7',
+            borderColor: COLORS.border,
             padding: 18,
             marginBottom: 16,
       },
@@ -490,9 +491,12 @@ const styles = StyleSheet.create({
             marginBottom: 14,
       },
       avatar: {
-            width: 56,
-            height: 56,
-            borderRadius: 28,
+            // width: 56,
+            // height: 56,
+            // borderRadius: 28,
+            width: 60,
+            height: 60,
+            borderRadius: 30,
       },
       avatarFallback: {
             backgroundColor: COLORS.primary,
@@ -507,7 +511,7 @@ const styles = StyleSheet.create({
       name: {
             fontSize: 16,
             fontWeight: '800',
-            color: '#18181B',
+            color: COLORS.text,
             marginBottom: 4,
       },
       goal: {
@@ -551,6 +555,8 @@ const styles = StyleSheet.create({
             height: 48,
             borderRadius: 14,
             backgroundColor: 'rgba(166, 24, 82, 0.08)',
+            borderColor: COLORS.primary,
+            borderWidth: 1,
       },
       workspaceBtnText: {
             color: COLORS.primary,

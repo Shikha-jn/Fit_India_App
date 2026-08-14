@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TrainerTabParamList } from '../types/TrainerTabParamList';
 import { TrainerDashboard } from '../features/dashboard/TrainerDashboard';
 import ClientDirectoryScreen from '../features/clientDirectory/screens/ClientDirectoryScreen'
-import WebinarScreen from '../features/webinar/screens/LiveWebinar';
+import WebinarScreen from '../features/webinar/screens/TrainerWebinar';
 import CustomTabBar from '../components/customTabBar';
 
 const TrainerTabStack = createBottomTabNavigator<TrainerTabParamList>();

@@ -52,7 +52,7 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
                               style: 'primary',
                               onPress: () => {
                                     alert.dismiss();
-                                    navigation.navigate('Login');
+                                    navigation.replace('Login');
                               },
                         },
                   ],

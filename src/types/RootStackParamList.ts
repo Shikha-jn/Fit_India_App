@@ -2,6 +2,7 @@ import { NavigatorScreenParams } from "@react-navigation/native";
 import { TrainerTabParamList } from "./TrainerTabParamList";
 import { UserTabParamList } from "./UserTabParamList";
 import { MainTabParamList } from "./MainTabParamList";
+import { Client } from "../features/clientDirectory/types/clientDirectory";
 
 export type RootStackParamList = {
       Splash: undefined;
@@ -13,7 +14,10 @@ export type RootStackParamList = {
       Attendance: {
             attendance: string[],
             joinedDate: any
-      }
+      };
       Subscription: undefined;
       ScheduleWebinar: undefined;
+      ClientDetail: {
+            client: Client;
+      }
 }

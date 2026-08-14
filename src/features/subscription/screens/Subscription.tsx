@@ -2,10 +2,18 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, StyleSheet, StatusBar, View, Text, Pressable } from 'react-native';
 import { Plan } from '../types/subscription';
 import Icon from 'react-native-vector-icons/Ionicons';
+import RazorpayCheckout, {
+      CheckoutOptions,
+      SuccessResponse,
+      ErrorResponse,
+} from 'react-native-razorpay';
+import { privateClient, RAZORPAY_KEY } from '../../../services/apiClients';
+import { useAuthStore } from '../../../store/useAuthStore';
 import { COLORS, SPACING, RADII, TYPOGRAPHY } from '../../../theme/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../types/RootStackParamList';
 import { getSubscription } from '../../../services/client.service';
+import { useAlert } from '../../../context/AlertContext';
 
 const demoData: Plan[] = [{
       _id: '',
@@ -95,7 +103,9 @@ const EmptyPlansState: React.FC = () => (
 );
 
 const SubscriptionScreen = ({ navigation }: SubscriptionScreenProps) => {
+      const { user } = useAuthStore();
       const [plans, setPlans] = useState<Plan[]>(demoData);
+      const alert = useAlert();
       useEffect(() => {
             getSubsPlans();
       }, []);
@@ -111,7 +121,46 @@ const SubscriptionScreen = ({ navigation }: SubscriptionScreenProps) => {
                   ._id;
       }, [plans]);
 
-      const onSubscribe = (plan: Plan) => { }
+      const onSubscribe = async (plan: Plan) => {
+
+            const order = await privateClient.post(`payments/create-order`, plan);
+            console.log('order res:', order.data);
+            if (order === null) {
+                  alert.error('Failed',
+                        'Unable to create order. Please try again.')
+            }
+
+            const options: CheckoutOptions = {
+                  order_id: order.data?.orderId || '',
+                  description: `Payment for Subscription`,
+                  currency: 'INR',
+                  key: RAZORPAY_KEY,
+                  amount: Math.round(plan.price * 100), // Razorpay expects amount in paise
+                  name: 'FitIndia',
+                  prefill: {
+                        name: user?.name || '',
+                        email: user?.email || '',
+                        contact: user?.phone || '',
+                  },
+                  theme: { color: COLORS.primary },
+            };
+
+            RazorpayCheckout.open(options)
+                  .then((data: SuccessResponse) => {
+                        if (data) {
+                              alert.success('Payment Successfull');
+                        }
+                  })
+                  .catch((error: ErrorResponse) => {
+                        if (error) {
+                              alert.error(error.description || 'Something went wrong');
+                              console.log('error:', error);
+                        } else {
+                              alert.error('Payment Failed', 'Something went wrong');
+                        }
+                  });
+
+      };
 
       return (
             <View style={styles.flex}>
@@ -126,7 +175,7 @@ const SubscriptionScreen = ({ navigation }: SubscriptionScreenProps) => {
                               <PlanCard
                                     plan={item}
                                     isPopular={item._id === resolvedPopularId}
-                                    onSubscribe={onSubscribe}
+                                    onSubscribe={() => { onSubscribe(item) }}
                               />
                         )}
                         ListEmptyComponent={<EmptyPlansState />}

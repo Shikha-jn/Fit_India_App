@@ -21,10 +21,15 @@ import { MainTabParamList } from '../../../types/MainTabParamList';
 import { liveWebinar } from '../../../services/webinar.service';
 import { useAlert } from '../../../context/AlertContext';
 import { RootStackParamList } from '../../../types/RootStackParamList';
-import { NativeStackNavigationProp,  } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp, } from '@react-navigation/native-stack';
 import { UserTabParamList } from '../../../types/UserTabParamList';
 import { useAuthStore } from '../../../store/useAuthStore';
-
+import { privateClient, RAZORPAY_KEY } from '../../../services/apiClients';
+import RazorpayCheckout, {
+      CheckoutOptions,
+      SuccessResponse,
+      ErrorResponse,
+} from 'react-native-razorpay';
 
 interface SectionBadgeProps {
       label: string;
@@ -102,7 +107,9 @@ const WebinarScreen = ({ navigation }: WebinarScreenProps) => {
       const [webinars, setWebinar] = useState<Webinar[]>([]);
       const [loading, setLoading] = useState(false);
       const [refreshing, setrefreshing] = useState(false);
-      const {isAuthenticated} = useAuthStore();
+      const { isAuthenticated, user } = useAuthStore();
+      const [ispaid, setispaid] = useState(false);
+      const [selectedWeb, setselectedWeb] = useState<Webinar | null>(null);
 
       const counts = useMemo(() => {
             return webinars.reduce<Partial<Record<WebinarFilter, number>>>((acc, w) => {
@@ -172,15 +179,54 @@ const WebinarScreen = ({ navigation }: WebinarScreenProps) => {
             });
       }, [webinars, filter]);
 
-      const handleCta = (webinar: Webinar) => {
-            // if (onPressWebinar) {
-            //       onPressWebinar(webinar);
-            //       return;
-            // }
-            // if (webinar.meetingLink) {
-            //       Linking.openURL(webinar.meetingLink).catch(() => { });
-            // }
-            //Razor Pay
+      //Razor Pay
+      const openRazorpayCheckout = async (data: Webinar) => {
+            const order = await privateClient.post(``);
+            console.log('order res:', order.data);
+            if (order === null) {
+                  alert.error('Failed',
+                        'Unable to create order. Please try again.')
+            }
+            debugger
+            const options: CheckoutOptions = {
+                  order_id: order.data?.orderId || '',
+                  description: `Payment for Webinar Register`,
+                  currency: 'INR',
+                  key: RAZORPAY_KEY,
+                  amount: Math.round(data.discountedPrice * 100), // Razorpay expects amount in paise
+                  name: 'FitIndia',
+                  prefill: {
+                        name: user?.name || '',
+                        email: user?.email || '',
+                        contact: user?.phone || '',
+                  },
+                  theme: { color: COLORS.primary },
+            };
+
+            RazorpayCheckout.open(options)
+                  .then((data: SuccessResponse) => {
+                        if (data) {
+                              alert.success('Payment Successful');
+                              setispaid(true);
+                        }
+
+                  })
+                  .catch((error: ErrorResponse) => {
+                        if (error) {
+                              alert.error('Something went wrong', 'Please try again latter');
+                              console.log('error:', error);
+                        } else {
+                              alert.error('Payment Failed', 'Something went wrong');
+                        }
+                  });
+      };
+
+      const handleCta = async (webinar: Webinar) => {
+            if (ispaid) {
+                  Linking.openURL(webinar.meetingLink).catch(() => { });
+            } else {
+                  await openRazorpayCheckout(webinar);
+            }
       };
 
       return (
@@ -224,7 +270,13 @@ const WebinarScreen = ({ navigation }: WebinarScreenProps) => {
                         }
                         renderItem={({ item }) => (
                               <View style={styles.cardWrap}>
-                                    <WebinarCard webinar={item} onPressCta={isAuthenticated? handleCta : onPressWebinar} />
+                                    <WebinarCard
+                                          webinar={item}
+                                          onPressCta={(webinar) =>
+                                                isAuthenticated
+                                                      ? handleCta(webinar)
+                                                      : onPressWebinar(webinar)}
+                                    />
                               </View>
                         )}
                         ListEmptyComponent={

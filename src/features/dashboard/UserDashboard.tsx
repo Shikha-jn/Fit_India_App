@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ScrollView, View, StyleSheet, StatusBar, Text, Pressable, Image } from 'react-native';
+import { ScrollView, View, StyleSheet, StatusBar, Text, Pressable, Image, RefreshControl } from 'react-native';
 import { LinearGradient } from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
@@ -191,11 +191,10 @@ export const defaultUser: UserData = {
       activePlanExpiresAt: "",
 }
 
-const UserDashboard: React.FC<UserDashboardProps> = ({
-
-}) => {
+const UserDashboard: React.FC<UserDashboardProps> = ({ }) => {
       const [user, setUser] = useState<UserData>(defaultUser);
       const alert = useAlert();
+      const [refreshing, setrefresing] = useState(false);
       useEffect(() => {
             fetchUserProfile();
       }, []);
@@ -204,6 +203,14 @@ const UserDashboard: React.FC<UserDashboardProps> = ({
             const userData = response.data;
             console.log('User profile data:', userData);
             setUser(userData);
+      }
+      const onRefresh = () => {
+            try {
+                  setrefresing(true);
+                  fetchUserProfile();
+            } finally {
+                  setrefresing(false);
+            }
       }
 
       const onMarkAttendance = async () => {
@@ -232,6 +239,14 @@ const UserDashboard: React.FC<UserDashboardProps> = ({
                         style={styles.flex}
                         contentContainerStyle={styles.content}
                         showsVerticalScrollIndicator={false}
+                        refreshControl={
+                              <RefreshControl
+                                    refreshing={refreshing}
+                                    onRefresh={onRefresh}
+                                    tintColor={COLORS.gold}
+                                    colors={[COLORS.primary]}
+                              />
+                        }
                   >
                         <DashboardHeader
                               user={user}
@@ -255,10 +270,10 @@ const UserDashboard: React.FC<UserDashboardProps> = ({
 
                         </View>
                         <View style={styles.rowTwo}>
-                        <NutritionPreviewCard
-                              dietPlan={user.dietPlan}
-                        // onViewAll={onViewFullDietPlan}
-                        />
+                              <NutritionPreviewCard
+                                    dietPlan={user.dietPlan}
+                              // onViewAll={onViewFullDietPlan}
+                              />
                         </View>
                   </ScrollView>
             </>
@@ -395,7 +410,7 @@ const styles = StyleSheet.create({
       //Stats styles
       card: {
             flex: 1,
-            backgroundColor: COLORS.surfaceElevated,
+            backgroundColor: COLORS.surface,
             borderRadius: 20,
             borderWidth: 1,
             borderColor: COLORS.border,
@@ -410,7 +425,7 @@ const styles = StyleSheet.create({
       //Medical card styles
       medcard: {
             flex: 1,
-            backgroundColor: COLORS.surfaceElevated,
+            backgroundColor: COLORS.surface,
             borderRadius: 20,
             borderWidth: 1,
             borderColor: COLORS.border,

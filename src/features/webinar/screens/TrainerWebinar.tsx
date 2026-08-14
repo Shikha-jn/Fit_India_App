@@ -206,16 +206,11 @@ const WebinarScreen = ({ navigation }: WebinarScreenProps) => {
                         ListHeaderComponent={
                               <>
                                     <View style={styles.header}>
-                                          {/* <SectionBadge label="Live Interactive Sessions" icon="radio-outline" />
-                                          <Text style={styles.title}>Fit India Expert Webinars</Text>
-                                          <Text style={styles.subtitle}>
-                                                Join our certified nutritionists, doctors, and health experts
-                                                in live, interactive panel discussions on weight management,
-                                                PCOS recovery, mental fitness, and balanced diets.
-                                          </Text> */}
-                                          <Pressable onPress={() => { navigation.navigate('ScheduleWebinar') }}>
-                                                <Icon name='' size={16} color={COLORS.gold} />
-                                                <Text style={{ color: COLORS.text, backgroundColor: COLORS.primary }}>
+                                          <Text style={{ color: COLORS.text }}>Create virtual interactions</Text>
+                                          <Pressable style={{ flex: 1, flexDirection: 'row', backgroundColor: COLORS.primary, borderRadius: 10, paddingHorizontal: 5, paddingVertical: 4, gap: 5, justifyContent: 'space-between', alignItems: 'center' }}
+                                                onPress={() => { navigation.navigate('ScheduleWebinar') }}>
+                                                <Icon name='add-circle-outline' size={16} color={COLORS.text} />
+                                                <Text style={{ color: COLORS.text, }}>
                                                       Schedule
                                                 </Text>
                                           </Pressable>
@@ -261,10 +256,19 @@ const styles = StyleSheet.create({
             paddingBottom: 40,
       },
       header: {
-            paddingHorizontal: 20,
-            paddingTop: 28,
-            paddingBottom: 20,
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginHorizontal: 20,
+            marginTop: 15,
+            marginBottom: 20,
             alignItems: 'center',
+            backgroundColor: COLORS.surface,
+            borderColor: COLORS.border,
+            borderWidth: 1,
+            gap: 20,
+            borderRadius: 7,
+            padding: 15,
       },
       title: {
             fontSize: 26,
@@ -309,6 +313,7 @@ const styles = StyleSheet.create({
             backgroundColor: COLORS.surface,
             borderWidth: 1,
             borderColor: COLORS.border,
+            marginBottom: 10,
       },
       pillActive: {
             backgroundColor: COLORS.primary,

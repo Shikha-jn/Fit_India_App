@@ -55,3 +55,36 @@ export const cancelWebinar = async (webinar: Webinar) => {
             throw error;
       }
 }
+
+export const getClientProgress = async (id: string) => {
+      try {
+            const response = await privateClient.get(`trainers/clients/${id}/progress`);
+            console.log('Client progress:', response);
+            return response.data;
+      } catch (error) {
+            console.log('Error in fetching client progress:', error);
+            throw error;
+      }
+}
+
+export const editWorkoutPlan = async (id: string, workout: string[]) => {
+      try {
+            const response = await privateClient.put(`trainers/clients/${id}/workout`, workout);
+            console.log('Workout edited:', response);
+            return response.data;
+      } catch (error) {
+            console.log('Error in editing worout plan');
+            throw error;
+      }
+}
+
+export const editDietPlan = async (id: string, diet: string[]) => {
+      try {
+            const response = await privateClient.put(`trainers/clients/${id}/diet`, diet);
+            console.log('Diet plan edited:', response);
+            return response.data;
+      } catch (error) {
+            console.log('Error in editing diet plan');
+            throw error;
+      }
+}

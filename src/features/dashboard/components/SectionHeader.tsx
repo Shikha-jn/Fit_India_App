@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
             paddingBottom: 12,
             marginBottom: 14,
             borderBottomWidth: 1,
-            borderBottomColor: '#E4E4E7',
+            borderBottomColor: COLORS.divider,
       },
       rowLight: {
             borderBottomColor: COLORS.border,

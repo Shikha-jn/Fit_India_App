@@ -72,7 +72,7 @@ const WorkoutsPreviewCard: React.FC<WorkoutsPreviewCardProps> = ({
 const styles = StyleSheet.create({
       card: {
             flex: 1,
-            backgroundColor: COLORS.surfaceElevated,
+            backgroundColor: COLORS.surface,
             borderRadius: 20,
             borderWidth: 1,
             borderColor: COLORS.border,

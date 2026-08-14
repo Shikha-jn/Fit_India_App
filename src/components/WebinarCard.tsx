@@ -182,22 +182,26 @@ const WebinarCard: React.FC<WebinarCardProps> = ({ webinar, onPressCta, role }) 
                         {status !== 'cancelled' && (
                               <CapacityBar filled={participants.length} capacity={capacity} />
                         )}
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
-                              <CardCta webinar={webinar} onPress={() => onPressCta?.(webinar)} />
-                              {role === 'trainer' ? (
-                                    <Pressable onPress={onCancel}>
-                                          <Text>Cancel</Text>
+                        <View style={{
+                              flexDirection: 'row', justifyContent: 'space-between', gap: 10,
+                              width: "100%", alignItems: 'center'
+                        }}>
+                              <CardCta webinar={webinar} onPress={() => onPressCta?.(webinar)} role={role} />
+                              {role === "trainer" && (
+                                    <Pressable onPress={onCancel} style={styles.cancelButton}>
+                                          <Text style={styles.cancelText}>Cancel</Text>
                                     </Pressable>
-                              ) : (null)}
+                              )}
                         </View>
                   </View>
             </View>
       );
 };
 
-const CardCta: React.FC<{ webinar: Webinar; onPress: () => void }> = ({
+const CardCta: React.FC<{ webinar: Webinar; onPress: () => void; role?: string }> = ({
       webinar,
       onPress,
+      role
 }) => {
       const { status, meetingLink } = webinar;
 
@@ -247,7 +251,13 @@ const CardCta: React.FC<{ webinar: Webinar; onPress: () => void }> = ({
                         style={styles.gradientBtn}
                   >
                         <Icon name="bookmark-outline" size={16} color={COLORS.text} />
-                        <Text style={styles.gradientBtnText}>Pay & Register</Text>
+                        {role === 'trainer' ?
+                              (
+                                    <Text style={styles.gradientBtnText}>Join</Text>
+                              ) :
+                              (
+                                    <Text style={styles.gradientBtnText}>Pay & Register</Text>
+                              )}
                   </LinearGradient>
             </Pressable>
       );
@@ -271,7 +281,7 @@ const styles = StyleSheet.create({
             elevation: 6,
       },
       bannerWrap: {
-            height: 150,
+            height: 200,
       },
       banner: {
             width: '100%',
@@ -389,6 +399,7 @@ const styles = StyleSheet.create({
             marginLeft: 8,
       },
       gradientBtnWrap: {
+            flex: 1,
             marginTop: 14,
             borderRadius: 13,
             overflow: 'hidden',
@@ -463,6 +474,22 @@ const styles = StyleSheet.create({
       fill: {
             height: '100%',
             borderRadius: 3,
+      },
+      cancelButton: {
+            flex: 1,
+            height: 48,
+            borderWidth: 1,
+            borderColor: COLORS.goldDark,
+            borderRadius: 12,
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 14,
+      },
+
+      cancelText: {
+            color: COLORS.goldDark,
+            fontSize: 14,
+            fontWeight: "600",
       },
 });
 

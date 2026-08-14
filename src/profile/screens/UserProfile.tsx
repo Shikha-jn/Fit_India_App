@@ -18,7 +18,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/RootStackParamList';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useAlert } from '../../context/AlertContext';
-import { MainTabParamList } from '../../types/MainTabParamList';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type UserProfileProps = CompositeScreenProps<NativeBottomTabScreenProps<UserTabParamList, 'Profile'>,
       NativeStackScreenProps<RootStackParamList>>;
@@ -246,6 +246,7 @@ const GoalAndConditionsCard: React.FC<GoalAndConditionsCardProps> = ({ user }) =
 );
 
 const UserProfileScreen = ({ navigation }: UserProfileProps) => {
+      const rootNav = navigation.getParent<NativeStackNavigationProp<RootStackParamList>>();
       const [user, setuser] = useState<UserData>(demoData);
       const authRemove = useAuthStore((s) => s.removeAuth);
       const alert = useAlert();
@@ -275,7 +276,7 @@ const UserProfileScreen = ({ navigation }: UserProfileProps) => {
       const onLogout = async () => {
             await authRemove();
             alert.success('You are logged out');
-            navigation.replace('MainTab', { screen: 'Home' });
+            rootNav.replace('MainTab', { screen: 'Home' });
             //       navigation.getParent<NativeBottomTabScreenProps<MainTabParamList>>().reset({
             //       index: 0,
             //       routes: [{ name: 'Home' }],
@@ -314,7 +315,7 @@ const UserProfileScreen = ({ navigation }: UserProfileProps) => {
                               onSubscription={onSubscription}
                               onHelpSupport={onHelpSupport}
                               onLogout={onLogout}
-                              // onPrivacySecurity={onPrivacySecurity}
+                        // onPrivacySecurity={onPrivacySecurity}
                         />
                   </ScrollView>
             </>
