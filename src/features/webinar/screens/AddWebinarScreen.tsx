@@ -239,7 +239,8 @@ const ScheduleWebinarForm = ({ navigation, data, isEdit }: ScheduleWebinarFormPr
                               <View style={styles.plusCircle}>
                                     <Icon name="add" size={16} color={COLORS.primaryLight} />
                               </View>
-                              <Text style={styles.headerText}>Schedule New Live Panel</Text>
+                              {isEdit ? (<Text style={styles.headerText}>Edit Live Panel</Text>) : (
+                                    <Text style={styles.headerText}>Schedule New Live Panel</Text>)}
                         </View>
 
                         <FormField

@@ -107,7 +107,7 @@ interface WebinarCardProps {
 const FALLBACK_BANNER =
       'https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=800&q=80';
 
-const WebinarCard: React.FC<WebinarCardProps> = ({ webinar, onPressCta, role, onEdit }) => {
+const WebinarCard = ({ webinar, onPressCta, role, onEdit }: WebinarCardProps) => {
       const {
             title,
             description,
@@ -182,7 +182,7 @@ const WebinarCard: React.FC<WebinarCardProps> = ({ webinar, onPressCta, role, on
                         </View>
 
                         {status !== 'cancelled' && (
-                              <CapacityBar filled={participants.length} capacity={capacity} />
+                              <CapacityBar filled={participants?.length} capacity={capacity} />
                         )}
                         <View style={{
                               flexDirection: 'row', justifyContent: 'space-between', gap: 10,
@@ -191,12 +191,12 @@ const WebinarCard: React.FC<WebinarCardProps> = ({ webinar, onPressCta, role, on
                               <CardCta webinar={webinar} onPress={() => onPressCta?.(webinar)} role={role} />
                               {role === "trainer" && (
                                     <>
-                                          <Pressable onPress={onCancel} style={styles.cancelButton}>
+                                          <Pressable onPress={onCancel} >
                                                 {/* <Text style={styles.cancelText}>Cancel</Text> */}
                                                 <MaterialIcons name='cancel-presentation' size={25} color={COLORS.gold} />
                                           </Pressable>
-                                          <Pressable onPress={() => onEdit}>
-                                                <MaterialIcons name='edit-calendar' size={25} color={COLORS.primary} />
+                                          <Pressable onPress={() => onEdit?.(webinar)}>
+                                                <MaterialIcons name='edit-calendar' size={25} color={COLORS.gold} />
                                           </Pressable>
                                     </>
                               )}
@@ -259,7 +259,7 @@ const CardCta: React.FC<{ webinar: Webinar; onPress: () => void; role?: string }
                         style={styles.gradientBtn}
                   >
                         <Icon name="bookmark-outline" size={16} color={COLORS.text} />
-                        {role === 'trainer' ?
+                        {role === 'trainer' || webinar.isRegistered ?
                               (
                                     <Text style={styles.gradientBtnText}>Join</Text>
                               ) :

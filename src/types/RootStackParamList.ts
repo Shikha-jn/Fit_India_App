@@ -28,4 +28,5 @@ export type RootStackParamList = {
       EditProfile: {
             profile: any;
       }
+      PaymentHistory: undefined;
 }

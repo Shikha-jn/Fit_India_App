@@ -43,3 +43,5 @@ export interface PaymentsResponse {
       message: string;
       data: Payment[];
 }
+
+export type PaymentStatusFilter = 'all' | PaymentStatus;

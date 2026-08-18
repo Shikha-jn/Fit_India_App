@@ -13,7 +13,7 @@ export const liveWebinar = async () => {
 
 export const liveZoomLinks = async () => {
       try {
-            const response = await publicClient.get('zoom-links');
+            const response = await privateClient.get('zoom-links');
             console.log('Live zoom links:', response);
             return response.data;
       } catch (error) {

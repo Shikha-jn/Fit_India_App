@@ -270,6 +270,9 @@ const UserProfileScreen = ({ navigation }: UserProfileProps) => {
       const onSubscription = () => {
             navigation.navigate('Subscription');
       }
+      const onPayment = () => {
+            navigation.navigate('PaymentHistory');
+      }
       const onPrivacySecurity = () => {
 
       }
@@ -315,6 +318,7 @@ const UserProfileScreen = ({ navigation }: UserProfileProps) => {
                               onSubscription={onSubscription}
                               onHelpSupport={onHelpSupport}
                               onLogout={onLogout}
+                              onPayment={onPayment}
                         // onPrivacySecurity={onPrivacySecurity}
                         />
                   </ScrollView>

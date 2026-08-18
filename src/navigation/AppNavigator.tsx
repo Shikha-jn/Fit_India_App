@@ -13,6 +13,7 @@ import SplashScreen from '../screens/SplashScreen';
 import ClientDetailScreen from '../features/clientDirectory/screens/ClientDetailScreen';
 import ContactScreen from '../features/contact/screens/ContactScreen';
 import EditScreen from '../profile/screens/EditProfile';
+import PaymentHistoryScreen from '../features/paymentHistory/screens/PaymentHistory';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -38,6 +39,7 @@ export default function AppNavigator() {
                         <Stack.Screen name="ClientDetail" component={ClientDetailScreen} />
                         <Stack.Screen name='Contact' component={ContactScreen} />
                         <Stack.Screen name='EditProfile' component={EditScreen} />
+                        <Stack.Screen name='PaymentHistory' component={PaymentHistoryScreen} />
                   </Stack.Navigator>
             </NavigationContainer>
       );

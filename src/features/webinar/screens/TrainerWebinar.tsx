@@ -231,7 +231,7 @@ const WebinarScreen = ({ navigation }: WebinarScreenProps) => {
                         }
                         renderItem={({ item }) => (
                               <View style={styles.cardWrap}>
-                                    <WebinarCard webinar={item} onPressCta={handleCta} role='trainer' onEdit={() => { handelEdit(item) }} />
+                                    <WebinarCard webinar={item} onPressCta={handleCta} role='trainer' onEdit={() => handelEdit(item)} />
                               </View>
                         )}
                         ListEmptyComponent={

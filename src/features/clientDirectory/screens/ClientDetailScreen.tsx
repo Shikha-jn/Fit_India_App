@@ -13,6 +13,7 @@ import EditWorkoutPlanModal from '../modals/WorkoutPlanModal';
 import EditDietPlanModal from '../modals/DietPlanModal';
 import { editWorkoutPlan, editDietPlan } from '../../../services/trainer.service';
 import { useAlert } from '../../../context/AlertContext';
+import { HealthRecord, PeriodsCycleStatus } from '../../healthTrack/types/healthRecord';
 
 type ClientDetailScreenProps = NativeStackScreenProps<RootStackParamList, 'ClientDetail'>;
 
@@ -28,7 +29,7 @@ const ClientHero: React.FC<ClientHeroProps> = ({ client, onBack }) => {
 
       return (
             <View style={styles.container}>
-                  <LinearGradient
+                  {/* <LinearGradient
                         colors={[COLORS.gradientStart, COLORS.gradientMid]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
@@ -40,9 +41,19 @@ const ClientHero: React.FC<ClientHeroProps> = ({ client, onBack }) => {
                                     <Icon name="chevron-back" size={18} color={COLORS.text} />
                               </Pressable>
                         )}
-                  </LinearGradient>
+                  </LinearGradient> */}
+                  <View style={styles.header}>
+                        {/* <View style={styles.glow} /> */}
+                        {!!onBack && (
+                              <Pressable onPress={onBack} style={styles.backBtn}>
+                                    <Icon name="chevron-back" size={18} color={COLORS.text} />
+                              </Pressable>
+                        )}
+                        <Text style={styles.name}>{client.name}</Text>
 
-                  <View style={styles.avatarWrap}>
+                  </View>
+
+                  {/* <View style={styles.avatarWrap}>
                         {client.profileImage ? (
                               <Image source={{ uri: client.profileImage }} style={styles.avatar} />
                         ) : (
@@ -58,11 +69,11 @@ const ClientHero: React.FC<ClientHeroProps> = ({ client, onBack }) => {
                                     { backgroundColor: isActive ? COLORS.success : COLORS.textMuted },
                               ]}
                         />
-                  </View>
+                  </View> */}
 
                   <View style={styles.infoBlock}>
-                        <Text style={styles.name}>{client.name}</Text>
-                        <View style={styles.statusPill}>
+                        {/* <Text style={styles.name}>{client.name}</Text> */}
+                        {/* <View style={styles.statusPill}>
                               <View
                                     style={[
                                           styles.statusPillDot,
@@ -72,7 +83,7 @@ const ClientHero: React.FC<ClientHeroProps> = ({ client, onBack }) => {
                               <Text style={styles.statusPillText}>
                                     {isActive ? 'Active Member' : 'Inactive Member'}
                               </Text>
-                        </View>
+                        </View> */}
 
                         <View style={styles.actionsRow}>
                               <Pressable
@@ -368,18 +379,106 @@ const DietPlanCard: React.FC<DietPlanCardProps> = ({ dietPlan, onManage }) => (
             )}
       </View>
 );
+export function formatRecordDate(dateStr: string): string {
+      const date = new Date(dateStr);
+      if (Number.isNaN(date.getTime())) return dateStr;
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+}
+interface CycleStatusPillProps {
+      status: PeriodsCycleStatus;
+}
 
+const TONES: Record<PeriodsCycleStatus, { bg: string; text: string }> = {
+      'None/Regular': { bg: 'rgba(166, 24, 82, 0.1)', text: COLORS.primary },
+      'Follicular Phase': { bg: 'rgba(212, 171, 58, 0.14)', text: COLORS.goldDark },
+      'Letual Phase': { bg: 'rgba(34, 197, 94, 0.12)', text: '#15803D' },
+      'Postmartum': { bg: 'rgba(34, 197, 94, 0.12)', text: '#15803D' },
+      'Menstruation (Period)': { bg: 'rgba(34, 197, 94, 0.12)', text: '#15803D' },
+      'Ovulation': { bg: 'rgba(34, 197, 94, 0.12)', text: '#15803D' },
+      'Irregular': { bg: 'rgba(34, 197, 94, 0.12)', text: '#15803D' },
+};
+
+const CycleStatusPill: React.FC<CycleStatusPillProps> = ({ status }) => {
+      const tone = TONES[status];
+      return (
+            <View style={[styles.pill, { backgroundColor: tone?.bg }]}>
+                  <Text style={[styles.text, { color: tone?.text }]}>{status}</Text>
+            </View>
+      );
+};
+interface HistoryRowProps {
+      record: HealthRecord;
+}
+const HistoryRow: React.FC<HistoryRowProps> = ({ record }) => (
+      <View style={styles.hisrow}>
+            <Text style={styles.date}>{formatRecordDate(record.date)}</Text>
+
+            <View style={styles.statsRow}>
+                  <View style={styles.statItem}>
+                        <Icon name="water-outline" size={13} color={COLORS.info} />
+                        <Text style={styles.statText}>{record.waterIntake} L</Text>
+                  </View>
+
+                  <View style={styles.statItem}>
+                        <Text style={styles.calIn}>{record.calorieIntake}</Text>
+                        <Text style={styles.calSlash}>/</Text>
+                        <Text style={styles.calOut}>{record.calorieBurned}</Text>
+                        <Text style={styles.calUnit}>kcal</Text>
+                  </View>
+
+                  <CycleStatusPill status={record.periodsCycleStatus} />
+            </View>
+
+            {!!record.notes && <Text style={styles.notes}>{record.notes}</Text>}
+      </View>
+);
+
+interface ProgressHistoryCardProps {
+      records: HealthRecord[];
+}
+
+const ProgressHistoryCard: React.FC<ProgressHistoryCardProps> = ({ records }) => {
+      const sorted = [...records].sort(
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+      );
+
+      return (
+            <View style={styles.prgcard}>
+                  {/* <Text style={styles.title}>Progress History</Text> */}
+                  <View style={styles.headerRow}>
+                        <SectionLabel label="Progress History" icon="stats-chart-outline" />
+                  </View>
+
+                  {sorted.length > 0 ? (
+                        sorted.map((record) => <HistoryRow key={record._id} record={record} />)
+                  ) : (
+                        <View style={styles.emptyState}>
+                              <Icon name="bar-chart-outline" size={28} color={COLORS.textMuted} />
+                              <Text style={styles.emptyTitle}>No progress logged yet</Text>
+                              <Text style={styles.emptyMessage}>
+                                    Entries you save will show up here as a running history.
+                              </Text>
+                        </View>
+                  )}
+            </View>
+      );
+};
 
 const ClientDetailScreen = ({ navigation, route }: ClientDetailScreenProps) => {
       const { client } = route.params;
       const [workoutmodal, setworkoutmodal] = useState(false);
       const [dietmodal, setDietmodal] = useState(false);
+      const [records, setrecords] = useState<HealthRecord[]>([]);
       const alert = useAlert();
-      // useEffect(() => {
-
-      // }, [])
+      useEffect(() => {
+            fetchClientProgress();
+      }, [])
       const fetchClientProgress = async () => {
             const response = await getClientProgress(client._id);
+            setrecords(response.data);
       }
       const onBack = () => {
             navigation.goBack();
@@ -420,6 +519,7 @@ const ClientDetailScreen = ({ navigation, route }: ClientDetailScreenProps) => {
                               onManage={onManageWorkoutPlan}
                         />
                         <DietPlanCard dietPlan={client.dietPlan} onManage={onManageDietPlan} />
+                        <ProgressHistoryCard records={records} />
                   </ScrollView>
                   <EditWorkoutPlanModal
                         visible={workoutmodal}
@@ -438,6 +538,15 @@ const ClientDetailScreen = ({ navigation, route }: ClientDetailScreenProps) => {
 };
 
 const styles = StyleSheet.create({
+      header: {
+            marginHorizontal: 26,
+            marginVertical: 15,
+            flex: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 35
+      },
       flex: {
             flex: 1,
             backgroundColor: COLORS.background,
@@ -447,7 +556,7 @@ const styles = StyleSheet.create({
             paddingBottom: 24,
       },
       container: {
-            marginBottom: AVATAR_SIZE / 2 + SPACING.sm,
+            marginBottom: AVATAR_SIZE / 2 - SPACING.sm,
       },
       banner: {
             height: 116,
@@ -466,7 +575,7 @@ const styles = StyleSheet.create({
       },
       backBtn: {
             position: 'absolute',
-            top: SPACING.md,
+            // top: SPACING.md,
             left: SPACING.md,
             width: 32,
             height: 32,
@@ -867,6 +976,102 @@ const styles = StyleSheet.create({
             color: COLORS.textMuted,
             fontStyle: 'italic',
             marginTop: SPACING.sm,
+      },
+      prgcard: {
+            backgroundColor: COLORS.surface,
+            borderRadius: 22,
+            borderWidth: 1,
+            borderColor: COLORS.border,
+            padding: 20,
+            marginHorizontal: 16,
+            // marginTop: 5,
+      },
+      title: {
+            fontSize: 17,
+            fontWeight: '800',
+            color: COLORS.text,
+            marginBottom: 8,
+      },
+      emptyState: {
+            alignItems: 'center',
+            paddingVertical: 32,
+      },
+      emptyTitle: {
+            fontSize: 13.5,
+            fontWeight: '800',
+            color: COLORS.text,
+            marginTop: 12,
+            marginBottom: 6,
+      },
+      emptyMessage: {
+            fontSize: 12,
+            color: COLORS.textMuted,
+            textAlign: 'center',
+            lineHeight: 18,
+      },
+      hisrow: {
+            paddingVertical: 16,
+            borderBottomWidth: 1,
+            borderBottomColor: COLORS.border,
+      },
+      date: {
+            fontSize: 14,
+            fontWeight: '800',
+            color: COLORS.text,
+            marginBottom: 10,
+      },
+      statsRow: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 14,
+            marginBottom: 8,
+      },
+      statItem: {
+            flexDirection: 'row',
+            alignItems: 'center',
+      },
+      statText: {
+            fontSize: 12.5,
+            fontWeight: '700',
+            color: COLORS.textSecondary,
+            marginLeft: 5,
+      },
+      calIn: {
+            fontSize: 12.5,
+            fontWeight: '800',
+            color: COLORS.success,
+      },
+      calSlash: {
+            fontSize: 12.5,
+            color: COLORS.textMuted,
+            marginHorizontal: 2,
+      },
+      calOut: {
+            fontSize: 12.5,
+            fontWeight: '800',
+            color: COLORS.error,
+      },
+      calUnit: {
+            fontSize: 11.5,
+            color: COLORS.textMuted,
+            marginLeft: 4,
+      },
+      notes: {
+            fontSize: 12.5,
+            color: COLORS.textSecondary,
+            fontStyle: 'italic',
+            lineHeight: 18,
+      },
+      pill: {
+            alignSelf: 'flex-start',
+            borderRadius: 999,
+            paddingVertical: 5,
+            paddingHorizontal: 12,
+      },
+      text: {
+            fontSize: 11,
+            fontWeight: '800',
       },
 });
 

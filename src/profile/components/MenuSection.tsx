@@ -49,6 +49,7 @@ interface MenuSectionProps {
       onPrivacySecurity?: () => void;
       onHelpSupport?: () => void;
       onLogout?: () => void;
+      onPayment?: () => void;
 }
 
 const MenuSection: React.FC<MenuSectionProps> = ({
@@ -58,6 +59,7 @@ const MenuSection: React.FC<MenuSectionProps> = ({
       onPrivacySecurity,
       onHelpSupport,
       onLogout,
+      onPayment
 }) => (
       <>
             <View style={styles.card}>
@@ -74,13 +76,18 @@ const MenuSection: React.FC<MenuSectionProps> = ({
                   />
                   <MenuRow
                         icon="help-circle-outline"
+                        label="Payment history"
+                        onPress={onPayment}
+                  />
+                  <MenuRow
+                        icon="help-circle-outline"
                         label="Help & FAQs"
                         onPress={onHelpSupport}
                         isLast
                   />
             </View>
 
-            <View style={[styles.card, styles.logoutCard, { marginBottom: SPACING.md }]}>
+            <View style={[styles.card, styles.logoutCard, { marginBottom: SPACING.xl }]}>
                   <MenuRow
                         icon="log-out-outline"
                         label="Log Out"
