@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, Image, Pressable, StyleSheet, Animated } from 'react-native';
 import { LinearGradient } from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { COLORS } from '../theme/theme';
 import { Webinar, WebinarStatus } from '../features/webinar/types/webinar';
 import { cancelWebinar } from '../services/trainer.service';
@@ -100,12 +101,13 @@ interface WebinarCardProps {
       webinar: Webinar;
       onPressCta?: (webinar: Webinar) => void;
       role?: string;
+      onEdit?: (webinar: Webinar) => void;
 }
 
 const FALLBACK_BANNER =
       'https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=800&q=80';
 
-const WebinarCard: React.FC<WebinarCardProps> = ({ webinar, onPressCta, role }) => {
+const WebinarCard: React.FC<WebinarCardProps> = ({ webinar, onPressCta, role, onEdit }) => {
       const {
             title,
             description,
@@ -125,7 +127,7 @@ const WebinarCard: React.FC<WebinarCardProps> = ({ webinar, onPressCta, role }) 
       const onCancel = async () => {
             const response = await cancelWebinar(webinar);
             if (response.success) {
-                  alert.success('Webinar canclled');
+                  alert.success('Webinar cancelled');
             }
       }
 
@@ -188,9 +190,15 @@ const WebinarCard: React.FC<WebinarCardProps> = ({ webinar, onPressCta, role }) 
                         }}>
                               <CardCta webinar={webinar} onPress={() => onPressCta?.(webinar)} role={role} />
                               {role === "trainer" && (
-                                    <Pressable onPress={onCancel} style={styles.cancelButton}>
-                                          <Text style={styles.cancelText}>Cancel</Text>
-                                    </Pressable>
+                                    <>
+                                          <Pressable onPress={onCancel} style={styles.cancelButton}>
+                                                {/* <Text style={styles.cancelText}>Cancel</Text> */}
+                                                <MaterialIcons name='cancel-presentation' size={25} color={COLORS.gold} />
+                                          </Pressable>
+                                          <Pressable onPress={() => onEdit}>
+                                                <MaterialIcons name='edit-calendar' size={25} color={COLORS.primary} />
+                                          </Pressable>
+                                    </>
                               )}
                         </View>
                   </View>

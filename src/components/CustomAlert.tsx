@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
-import { COLORS } from '../theme/theme';
+import { COLORS, SPACING, RADII, TYPOGRAPHY } from '../theme/theme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -45,33 +45,33 @@ const TYPE_CONFIG: Record<
 > = {
     success: {
         icon: 'checkmark-circle',
-        iconColor: COLORS.goldLight,
-        gradientColors: ['rgba(212, 175, 55, 0.15)', 'rgba(37, 37, 40, 0.08)'],
-        ringColor: 'rgba(212, 175, 55, 0.3)',
+        iconColor: COLORS.success,
+        gradientColors: [COLORS.success + '26', COLORS.success + '0D'],
+        ringColor: COLORS.success + '4D',
     },
     error: {
         icon: 'close-circle',
-        iconColor: '#FF6B6B',
-        gradientColors: ['rgba(255, 107, 107, 0.15)', 'rgba(230, 50, 50, 0.08)'],
-        ringColor: 'rgba(255, 107, 107, 0.3)',
+        iconColor: COLORS.error,
+        gradientColors: [COLORS.error + '26', COLORS.error + '0D'],
+        ringColor: COLORS.error + '4D',
     },
     warning: {
         icon: 'warning',
-        iconColor: '#FFB84D',
-        gradientColors: ['rgba(255, 184, 77, 0.15)', 'rgba(230, 150, 0, 0.08)'],
-        ringColor: 'rgba(255, 184, 77, 0.3)',
+        iconColor: COLORS.warning,
+        gradientColors: [COLORS.warning + '26', COLORS.warning + '0D'],
+        ringColor: COLORS.warning + '4D',
     },
     info: {
         icon: 'information-circle',
-        iconColor: COLORS.goldDark,
-        gradientColors: [COLORS.surfaceElevated + '26', COLORS.primary + '14'],
-        ringColor: 'rgba(212, 175, 55, 0.3)',
+        iconColor: COLORS.info,
+        gradientColors: [COLORS.info + '26', COLORS.info + '0D'],
+        ringColor: COLORS.info + '4D',
     },
     confirm: {
         icon: 'help-circle',
-        iconColor: COLORS.primaryDark,
-        gradientColors: [COLORS.primaryDark + '26', COLORS.goldDark + '14'],
-        ringColor: 'rgba(212, 175, 55, 0.3)',
+        iconColor: COLORS.goldLight,
+        gradientColors: [COLORS.gold + '26', COLORS.primary + '14'],
+        ringColor: COLORS.gold + '4D',
     },
 };
 
@@ -84,24 +84,24 @@ const BUTTON_STYLES: Record<
     }
 > = {
     primary: {
-        bg: [COLORS.surfaceElevated, COLORS.primary],
+        bg: [COLORS.primaryLight, COLORS.primary],
         text: COLORS.text,
         border: 'transparent',
     },
     secondary: {
-        bg: [COLORS.surfaceElevated, COLORS.goldDark],
-        text: COLORS.text,
+        bg: [COLORS.goldLight, COLORS.gold],
+        text: COLORS.backgroundSecondary,
         border: 'transparent',
     },
     danger: {
-        bg: ['rgba(255, 107, 107, 0.15)', 'rgba(255, 107, 107, 0.08)'],
-        text: '#FF6B6B',
-        border: 'rgba(255, 107, 107, 0.3)',
+        bg: [COLORS.error + '26', COLORS.error + '14'],
+        text: COLORS.error,
+        border: COLORS.error + '4D',
     },
     ghost: {
-        bg: ['rgba(255, 255, 255, 0.08)', 'rgba(255, 255, 255, 0.04)'],
-        text: COLORS.textMuted,
-        border: 'rgba(255, 255, 255, 0.2)',
+        bg: [COLORS.surfaceElevated, COLORS.surface],
+        text: COLORS.textSecondary,
+        border: COLORS.border,
     },
 };
 
@@ -139,7 +139,7 @@ const FloatingParticle: React.FC<{
 
     const opacity = anim.interpolate({
         inputRange: [0, 0.5, 1],
-        outputRange: [0.2, 0.5, 0.2],
+        outputRange: [0.15, 0.4, 0.15],
     });
 
     return (
@@ -166,7 +166,7 @@ export default function CustomAlert({
     type = 'info',
     title,
     message,
-    buttons = [{ label: 'OK', onPress: () => {}, style: 'primary' }],
+    buttons = [{ label: 'OK', onPress: () => { }, style: 'primary' }],
     onDismiss,
     dismissable = true,
 }: CustomAlertProps) {
@@ -286,11 +286,11 @@ export default function CustomAlert({
         size: number;
         delay: number;
     }> = [
-        { left: '8%', top: '15%', size: 4, delay: 0 },
-        { left: '85%', top: '12%', size: 3, delay: 400 },
-        { left: '15%', top: '75%', size: 5, delay: 800 },
-        { left: '88%', top: '70%', size: 4, delay: 200 },
-    ];
+            { left: '8%', top: '15%', size: 4, delay: 0 },
+            { left: '85%', top: '12%', size: 3, delay: 400 },
+            { left: '15%', top: '75%', size: 5, delay: 800 },
+            { left: '88%', top: '70%', size: 4, delay: 200 },
+        ];
 
     return (
         <Modal transparent visible={visible} animationType="none" statusBarTranslucent>
@@ -312,7 +312,7 @@ export default function CustomAlert({
                     ]}
                 >
                     <LinearGradient
-                        colors={['rgba(255,255,255,0.98)', 'rgba(255,255,255,0.95)']}
+                        colors={[COLORS.surfaceElevated, COLORS.surface]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
                         style={styles.cardGradient}
@@ -324,7 +324,7 @@ export default function CustomAlert({
 
                         {/* Top gradient accent */}
                         <LinearGradient
-                            colors={[COLORS.surfaceElevated, COLORS.primary, COLORS.goldDark]}
+                            colors={[COLORS.gradientStart, COLORS.gradientMid, COLORS.gradientEnd]}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 0 }}
                             style={styles.topAccent}
@@ -395,7 +395,6 @@ export default function CustomAlert({
                         >
                             {buttons.map((btn, i) => {
                                 const bStyle = BUTTON_STYLES[btn.style ?? 'primary'];
-                                const isGradient = Array.isArray(bStyle.bg);
 
                                 return (
                                     <TouchableOpacity
@@ -407,49 +406,23 @@ export default function CustomAlert({
                                         onPress={btn.onPress}
                                         activeOpacity={0.85}
                                     >
-                                        {isGradient ? (
-                                            <LinearGradient
-                                                colors={bStyle.bg}
-                                                start={{ x: 0, y: 0 }}
-                                                end={{ x: 1, y: 0 }}
-                                                style={[
-                                                    styles.btn,
-                                                    {
-                                                        borderColor: bStyle.border,
-                                                        borderWidth:
-                                                            bStyle.border !== 'transparent'
-                                                                ? 1.5
-                                                                : 0,
-                                                    },
-                                                ]}
-                                            >
-                                                <Text
-                                                    style={[styles.btnText, { color: bStyle.text }]}
-                                                >
-                                                    {btn.label}
-                                                </Text>
-                                            </LinearGradient>
-                                        ) : (
-                                            <View
-                                                style={[
-                                                    styles.btn,
-                                                    {
-                                                        backgroundColor: bStyle.bg[0],
-                                                        borderColor: bStyle.border,
-                                                        borderWidth:
-                                                            bStyle.border !== 'transparent'
-                                                                ? 1.5
-                                                                : 0,
-                                                    },
-                                                ]}
-                                            >
-                                                <Text
-                                                    style={[styles.btnText, { color: bStyle.text }]}
-                                                >
-                                                    {btn.label}
-                                                </Text>
-                                            </View>
-                                        )}
+                                        <LinearGradient
+                                            colors={bStyle.bg}
+                                            start={{ x: 0, y: 0 }}
+                                            end={{ x: 1, y: 0 }}
+                                            style={[
+                                                styles.btn,
+                                                {
+                                                    borderColor: bStyle.border,
+                                                    borderWidth:
+                                                        bStyle.border !== 'transparent' ? 1.5 : 0,
+                                                },
+                                            ]}
+                                        >
+                                            <Text style={[styles.btnText, { color: bStyle.text }]}>
+                                                {btn.label}
+                                            </Text>
+                                        </LinearGradient>
                                     </TouchableOpacity>
                                 );
                             })}
@@ -465,46 +438,46 @@ export default function CustomAlert({
 const styles = StyleSheet.create({
     backdrop: {
         ...StyleSheet.absoluteFill,
-        backgroundColor: 'rgba(0, 68, 102, 0.6)',
+        backgroundColor: COLORS.overlay,
     },
     centerer: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingHorizontal: 28,
+        paddingHorizontal: SPACING.lg,
     },
     card: {
         width: '100%',
-        borderRadius: 24,
+        borderRadius: RADII.xl,
         overflow: 'hidden',
-        shadowColor: COLORS.textMuted,
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 20 },
-        shadowOpacity: 0.25,
+        shadowOpacity: 0.5,
         shadowRadius: 35,
         elevation: 18,
     },
     cardGradient: {
         width: '100%',
         alignItems: 'center',
-        paddingBottom: 24,
+        paddingBottom: SPACING.lg,
         borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.4)',
-        borderRadius: 24,
+        borderColor: COLORS.border,
+        borderRadius: RADII.xl,
     },
     particle: {
         position: 'absolute',
-        backgroundColor: COLORS.primary,
+        backgroundColor: COLORS.gold,
     },
     topAccent: {
         width: '100%',
         height: 4,
-        marginBottom: 32,
+        marginBottom: SPACING.xl,
     },
     iconContainer: {
         position: 'relative',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 20,
+        marginBottom: SPACING.md + 4,
         height: 90,
     },
     iconRing1: {
@@ -524,56 +497,56 @@ const styles = StyleSheet.create({
     iconWrap: {
         width: 68,
         height: 68,
-        borderRadius: 20,
+        borderRadius: RADII.lg,
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 2,
-        borderColor: 'rgba(255,255,255,0.5)',
-        shadowColor: COLORS.textSecondary,
+        borderColor: COLORS.border,
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.15,
+        shadowOpacity: 0.3,
         shadowRadius: 16,
         elevation: 8,
     },
     title: {
         fontSize: 20,
-        fontWeight: '800',
-        color: COLORS.backgroundSecondary,
+        fontWeight: TYPOGRAPHY.extraBold,
+        color: COLORS.text,
         textAlign: 'center',
         letterSpacing: -0.2,
-        paddingHorizontal: 24,
-        marginBottom: 8,
+        paddingHorizontal: SPACING.lg,
+        marginBottom: SPACING.sm,
     },
     message: {
         fontSize: 14,
-        color: COLORS.divider,
+        color: COLORS.textMuted,
         textAlign: 'center',
         lineHeight: 20,
-        paddingHorizontal: 28,
-        fontWeight: '400',
+        paddingHorizontal: SPACING.lg + 4,
+        fontWeight: TYPOGRAPHY.regular,
     },
     dividerContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 24,
-        marginBottom: 20,
-        gap: 8,
+        marginTop: SPACING.lg,
+        marginBottom: SPACING.md + 4,
+        gap: SPACING.sm,
     },
     divider: {
         width: 50,
         height: 1.5,
-        backgroundColor: COLORS.goldDark,
+        backgroundColor: COLORS.divider,
     },
     dividerDot: {
         width: 4,
         height: 4,
         borderRadius: 2,
-        backgroundColor: COLORS.goldLight,
+        backgroundColor: COLORS.gold,
     },
     buttonsRow: {
         flexDirection: 'row',
-        paddingHorizontal: 20,
-        gap: 10,
+        paddingHorizontal: SPACING.md + 4,
+        gap: SPACING.sm + 2,
         width: '100%',
     },
     buttonsSingle: {
@@ -584,7 +557,7 @@ const styles = StyleSheet.create({
     },
     btn: {
         paddingVertical: 15,
-        borderRadius: 14,
+        borderRadius: RADII.md + 2,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -593,7 +566,7 @@ const styles = StyleSheet.create({
     },
     btnText: {
         fontSize: 15,
-        fontWeight: '700',
+        fontWeight: TYPOGRAPHY.bold,
         letterSpacing: 0.3,
         textTransform: 'uppercase',
     },
@@ -625,7 +598,7 @@ export function AlertDemo() {
     return (
         <View style={demoStyles.container}>
             <LinearGradient
-                colors={[COLORS.surfaceElevated, COLORS.primaryDark, COLORS.goldDark]}
+                colors={[COLORS.gradientStart, COLORS.gradientMid, COLORS.gradientEnd]}
                 start={{ x: 0.1, y: 0 }}
                 end={{ x: 0.9, y: 1 }}
                 style={demoStyles.header}
@@ -638,7 +611,7 @@ export function AlertDemo() {
             <View style={demoStyles.grid}>
                 {/* Success */}
                 <TouchableOpacity
-                    style={[demoStyles.tile]}
+                    style={demoStyles.tile}
                     onPress={() =>
                         show(
                             'success',
@@ -652,17 +625,19 @@ export function AlertDemo() {
                     }
                 >
                     <LinearGradient
-                        colors={['rgba(126, 211, 33, 0.15)', 'rgba(94, 163, 0, 0.08)']}
+                        colors={[COLORS.success + '26', COLORS.success + '0D']}
                         style={demoStyles.tileGradient}
                     >
-                        <Ionicons name="checkmark-circle" size={32} color={COLORS.gold} />
-                        <Text style={[demoStyles.tileLabel, { color: COLORS.gold } ]}>Success</Text>
+                        <Ionicons name="checkmark-circle" size={32} color={COLORS.success} />
+                        <Text style={[demoStyles.tileLabel, { color: COLORS.success }]}>
+                            Success
+                        </Text>
                     </LinearGradient>
                 </TouchableOpacity>
 
                 {/* Error */}
                 <TouchableOpacity
-                    style={[demoStyles.tile]}
+                    style={demoStyles.tile}
                     onPress={() =>
                         show(
                             'error',
@@ -676,17 +651,17 @@ export function AlertDemo() {
                     }
                 >
                     <LinearGradient
-                        colors={['rgba(255, 107, 107, 0.15)', 'rgba(230, 50, 50, 0.08)']}
+                        colors={[COLORS.error + '26', COLORS.error + '0D']}
                         style={demoStyles.tileGradient}
                     >
-                        <Ionicons name="close-circle" size={32} color="#FF6B6B" />
-                        <Text style={[demoStyles.tileLabel, { color: '#E63232' }]}>Error</Text>
+                        <Ionicons name="close-circle" size={32} color={COLORS.error} />
+                        <Text style={[demoStyles.tileLabel, { color: COLORS.error }]}>Error</Text>
                     </LinearGradient>
                 </TouchableOpacity>
 
                 {/* Warning */}
                 <TouchableOpacity
-                    style={[demoStyles.tile]}
+                    style={demoStyles.tile}
                     onPress={() =>
                         show(
                             'warning',
@@ -700,17 +675,19 @@ export function AlertDemo() {
                     }
                 >
                     <LinearGradient
-                        colors={['rgba(255, 184, 77, 0.15)', 'rgba(230, 150, 0, 0.08)']}
+                        colors={[COLORS.warning + '26', COLORS.warning + '0D']}
                         style={demoStyles.tileGradient}
                     >
-                        <Ionicons name="warning" size={32} color="#FFB84D" />
-                        <Text style={[demoStyles.tileLabel, { color: '#E69600' }]}>Warning</Text>
+                        <Ionicons name="warning" size={32} color={COLORS.warning} />
+                        <Text style={[demoStyles.tileLabel, { color: COLORS.warning }]}>
+                            Warning
+                        </Text>
                     </LinearGradient>
                 </TouchableOpacity>
 
                 {/* Info */}
                 <TouchableOpacity
-                    style={[demoStyles.tile]}
+                    style={demoStyles.tile}
                     onPress={() =>
                         show(
                             'info',
@@ -721,15 +698,11 @@ export function AlertDemo() {
                     }
                 >
                     <LinearGradient
-                        colors={[COLORS.primaryDark + '26', COLORS.goldDark + '14']}
+                        colors={[COLORS.info + '26', COLORS.info + '0D']}
                         style={demoStyles.tileGradient}
                     >
-                        <Ionicons
-                            name="information-circle"
-                            size={32}
-                            color={COLORS.gradientStart}
-                        />
-                        <Text style={[demoStyles.tileLabel, { color: COLORS.primary }]}>Info</Text>
+                        <Ionicons name="information-circle" size={32} color={COLORS.info} />
+                        <Text style={[demoStyles.tileLabel, { color: COLORS.info }]}>Info</Text>
                     </LinearGradient>
                 </TouchableOpacity>
 
@@ -749,11 +722,13 @@ export function AlertDemo() {
                     }
                 >
                     <LinearGradient
-                        colors={[COLORS.surfaceElevated + '26', COLORS.goldDark + '14']}
+                        colors={[COLORS.gold + '26', COLORS.primary + '14']}
                         style={demoStyles.tileGradient}
                     >
-                        <Ionicons name="help-circle" size={32} color={COLORS.goldDark} />
-                        <Text style={[demoStyles.tileLabel, { color: COLORS.goldDark }]}>Confirm</Text>
+                        <Ionicons name="help-circle" size={32} color={COLORS.goldLight} />
+                        <Text style={[demoStyles.tileLabel, { color: COLORS.goldLight }]}>
+                            Confirm
+                        </Text>
                     </LinearGradient>
                 </TouchableOpacity>
             </View>
@@ -771,24 +746,24 @@ export function AlertDemo() {
 }
 
 const demoStyles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#F0F8F8' },
+    container: { flex: 1, backgroundColor: COLORS.background },
     header: {
         paddingTop: 60,
-        paddingBottom: 32,
-        paddingHorizontal: 24,
-        borderBottomLeftRadius: 32,
-        borderBottomRightRadius: 32,
-        marginBottom: 24,
-        shadowColor: COLORS.divider,
+        paddingBottom: SPACING.xl,
+        paddingHorizontal: SPACING.lg,
+        borderBottomLeftRadius: RADII.xl + 4,
+        borderBottomRightRadius: RADII.xl + 4,
+        marginBottom: SPACING.lg,
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.15,
+        shadowOpacity: 0.35,
         shadowRadius: 20,
         elevation: 10,
     },
     eyebrow: {
         fontSize: 11,
-        fontWeight: '700',
-        color: 'rgba(255,255,255,0.8)',
+        fontWeight: TYPOGRAPHY.bold,
+        color: COLORS.goldLight,
         letterSpacing: 2.5,
         marginBottom: 6,
     },
@@ -801,23 +776,24 @@ const demoStyles = StyleSheet.create({
     },
     subheading: {
         fontSize: 14,
-        fontWeight: '500',
-        color: 'rgba(255,255,255,0.75)',
+        fontWeight: TYPOGRAPHY.medium,
+        color: COLORS.textSecondary,
         letterSpacing: 0.3,
     },
     grid: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        paddingHorizontal: 16,
-        gap: 12,
+        paddingHorizontal: SPACING.md,
+        gap: SPACING.sm + 4,
     },
     tile: {
         width: (SCREEN_WIDTH - 44) / 2,
-        borderRadius: 18,
+        borderRadius: RADII.lg - 2,
         overflow: 'hidden',
-        shadowColor: COLORS.divider,
+        backgroundColor: COLORS.surface,
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
+        shadowOpacity: 0.25,
         shadowRadius: 12,
         elevation: 4,
     },
@@ -825,13 +801,13 @@ const demoStyles = StyleSheet.create({
     tileGradient: {
         paddingVertical: 28,
         alignItems: 'center',
-        gap: 10,
+        gap: SPACING.sm + 2,
         borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.5)',
+        borderColor: COLORS.border,
     },
     tileLabel: {
         fontSize: 14,
-        fontWeight: '700',
+        fontWeight: TYPOGRAPHY.bold,
         letterSpacing: 0.5,
         textTransform: 'uppercase',
     },

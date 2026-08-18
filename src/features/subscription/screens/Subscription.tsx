@@ -106,6 +106,8 @@ const SubscriptionScreen = ({ navigation }: SubscriptionScreenProps) => {
       const { user } = useAuthStore();
       const [plans, setPlans] = useState<Plan[]>(demoData);
       const alert = useAlert();
+      const [refreshing, setrefreshing] = useState(false);
+
       useEffect(() => {
             getSubsPlans();
       }, []);
@@ -113,6 +115,14 @@ const SubscriptionScreen = ({ navigation }: SubscriptionScreenProps) => {
             const response = await getSubscription();
             const subsPlans = response.data;
             setPlans(subsPlans);
+      }
+      const onRefresh = async () => {
+            try {
+                  setrefreshing(true);
+                  await getSubsPlans();
+            } finally {
+                  setrefreshing(false);
+            }
       }
       const resolvedPopularId = useMemo(() => {
             // if (popularPlanId !== undefined) return popularPlanId;
@@ -122,43 +132,59 @@ const SubscriptionScreen = ({ navigation }: SubscriptionScreenProps) => {
       }, [plans]);
 
       const onSubscribe = async (plan: Plan) => {
+            try {
+                  const req = {
+                        amount: plan.price,
+                        planName: plan.name
+                  }
+                  const order = await privateClient.post(`payments/create-order`, req);
 
-            const order = await privateClient.post(`payments/create-order`, plan);
-            console.log('order res:', order.data);
-            if (order === null) {
-                  alert.error('Failed',
-                        'Unable to create order. Please try again.')
+                  console.log('order res:', order.data);
+                  if (order === null) {
+                        alert.error('Failed',
+                              'Unable to create order. Please try again.')
+                  }
+
+                  const options: CheckoutOptions = {
+                        order_id: order.data?.orderId || '',
+                        description: `Payment for Subscription`,
+                        currency: 'INR',
+                        key: RAZORPAY_KEY,
+                        amount: Math.round(plan.price * 100), // Razorpay expects amount in paise
+                        name: 'FitIndia',
+                        prefill: {
+                              name: user?.name || '',
+                              email: user?.email || '',
+                              contact: user?.phone || '',
+                        },
+                        theme: { color: COLORS.primary },
+                  };
+
+                  RazorpayCheckout.open(options)
+                        .then(async (data: SuccessResponse) => {
+                              if (data) {
+                                    const payload = data;
+                                    const res = await privateClient.post('payments/verify', payload);
+                                    console.log('verification response:', res);
+                                    if (res?.data?.success) {
+                                          alert.success('Payment Successfull');
+                                          onRefresh();
+                                    } else {
+                                          alert.error(res?.data?.message);
+                                    }
+                              }
+                        })
+                        .catch((error: ErrorResponse) => {
+                              if (error) {
+                                    alert.error(error.description || 'Something went wrong');
+                                    console.log('error:', error);
+                              } else {
+                                    alert.error('Payment Failed', 'Something went wrong');
+                              }
+                        });
+            } catch (error: any) {
+                  alert.error(error?.data?.message || '...');
             }
-
-            const options: CheckoutOptions = {
-                  order_id: order.data?.orderId || '',
-                  description: `Payment for Subscription`,
-                  currency: 'INR',
-                  key: RAZORPAY_KEY,
-                  amount: Math.round(plan.price * 100), // Razorpay expects amount in paise
-                  name: 'FitIndia',
-                  prefill: {
-                        name: user?.name || '',
-                        email: user?.email || '',
-                        contact: user?.phone || '',
-                  },
-                  theme: { color: COLORS.primary },
-            };
-
-            RazorpayCheckout.open(options)
-                  .then((data: SuccessResponse) => {
-                        if (data) {
-                              alert.success('Payment Successfull');
-                        }
-                  })
-                  .catch((error: ErrorResponse) => {
-                        if (error) {
-                              alert.error(error.description || 'Something went wrong');
-                              console.log('error:', error);
-                        } else {
-                              alert.error('Payment Failed', 'Something went wrong');
-                        }
-                  });
 
       };
 
@@ -179,6 +205,8 @@ const SubscriptionScreen = ({ navigation }: SubscriptionScreenProps) => {
                               />
                         )}
                         ListEmptyComponent={<EmptyPlansState />}
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
                   />
             </View>
       );

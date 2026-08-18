@@ -7,7 +7,7 @@ import ActivePlanCard from '../components/ActivePlansCard';
 import ActivitySnapshotCard from '../components/ActivitySnapShot';
 import MenuSection from '../components/MenuSection';
 import { calculateBmi } from '../components/health';
-import { getClientProfile, getSubscription, paymentHistory } from '../../services/client.service';
+import { getClientProfile, editProfile } from '../../services/client.service';
 
 import { LinearGradient } from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -260,7 +260,7 @@ const UserProfileScreen = ({ navigation }: UserProfileProps) => {
             const client = response.data;
             setuser(client)
       }
-      const onEditProfile = () => { }
+      const onEditProfile = (profile: any) => { rootNav.navigate('EditProfile', { profile: profile }); }
       const onViewAttendance = () => {
             navigation.navigate('Attendance', { attendance: user.attendance, joinedDate: user.createdAt });
       }
@@ -304,7 +304,7 @@ const UserProfileScreen = ({ navigation }: UserProfileProps) => {
                         contentContainerStyle={styles.content}
                         showsVerticalScrollIndicator={false}
                   >
-                        <ProfileHero user={user} onEditPress={onEditProfile} />
+                        <ProfileHero user={user} onEditPress={() => onEditProfile(user)} />
                         <StatsGrid user={user} />
                         <GoalAndConditionsCard user={user} />
                         <ActivePlanCard user={user} />

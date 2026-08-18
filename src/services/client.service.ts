@@ -1,4 +1,5 @@
-import { privateClient } from "./apiClients";
+import { privateClient, publicClient } from "./apiClients";
+import { Contact } from "../features/contact/types/contact";
 
 export const getClientProfile = async () => {
       try {
@@ -62,6 +63,50 @@ export const addHealthRecord = async (healthRecord: any) => {
             return response.data;
       } catch (error) {
             console.log('Error in adding health record', error);
+            throw error;
+      }
+}
+
+export const verifyPayment = async (id: string, payload: any) => {
+      try {
+            const response = await privateClient.post(`webinars/${id}/payment/verify`, payload);
+            console.log('Verification done,', response);
+            return response.data;
+      } catch (error) {
+            console.log('Error in payment verification', error);
+            throw error;
+      }
+}
+
+export const editProfile = async (profile: any) => {
+      try {
+            const response = await privateClient.put('clients/profile', profile);
+            console.log('User profile updated:', response);
+            return response.data;
+      } catch (error) {
+            console.log('Error in updating user profile:', error);
+            throw error;
+      }
+}
+
+export const createInquiry = async (inquiry: Contact) => {
+      try {
+            const response = await publicClient.post('clients/contact-inquiries', inquiry);
+            console.log('Inquiry created:', response);
+            return response.data;
+      } catch (error) {
+            console.log('Error in inquiry:', error);
+            throw error;
+      }
+}
+
+export const getRecordedSessions = async () => {
+      try {
+            const response = await privateClient.get('/recorded-meetings');
+            console.log('recored mettings:', response);
+            return response.data;
+      } catch (error) {
+            console.log('Error in getting recorded meetings', error);
             throw error;
       }
 }

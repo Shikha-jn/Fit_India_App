@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { ScrollView, StyleSheet, StatusBar, KeyboardAvoidingView, Platform, View, Text, TextInput, Pressable, Image, ActivityIndicator, TextInputProps } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { COLORS, SPACING, TYPOGRAPHY, RADII } from '../../../theme/theme';
-import { ScheduleWebinarPayload } from '../types/webinar';
+import { ScheduleWebinarPayload, Webinar } from '../types/webinar';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../types/RootStackParamList';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useAlert } from '../../../context/AlertContext';
-import { scheduleWebinar } from '../../../services/trainer.service';
+import { scheduleWebinar, editWebinar } from '../../../services/trainer.service';
 
 type ScheduleWebinarScreenProps = NativeStackScreenProps<RootStackParamList, 'ScheduleWebinar'>;
 
@@ -159,22 +159,28 @@ const FormField: React.FC<FormFieldProps> = ({
 interface ScheduleWebinarFormProps {
       // onSchedule?: (payload: ScheduleWebinarPayload) => Promise<void> | void;
       navigation: any;
+      data?: Webinar;
+      isEdit: boolean;
 }
 
-const ScheduleWebinarForm: React.FC<ScheduleWebinarFormProps> = ({ navigation }) => {
-      const [title, setTitle] = useState('');
-      const [description, setDescription] = useState('');
-      const [scheduleInput, setScheduleInput] = useState('');
-      const [capacity, setCapacity] = useState('50');
-      const [originalPrice, setOriginalPrice] = useState('');
-      const [discountedPrice, setDiscountedPrice] = useState('');
-      const [meetingLink, setMeetingLink] = useState('');
-      const [bannerImage, setBannerImage] = useState('');
+const ScheduleWebinarForm = ({ navigation, data, isEdit }: ScheduleWebinarFormProps) => {
+      const [title, setTitle] = useState(data?.title ? data?.title : '');
+      const [description, setDescription] = useState(data?.description ? data?.description : '');
+      const [scheduleInput, setScheduleInput] = useState(data?.scheduleTime ? data?.scheduleTime : '');
+      const [capacity, setCapacity] = useState(data?.capacity ? String(data?.capacity) : '50');
+      const [originalPrice, setOriginalPrice] = useState(data?.originalPrice ? String(data.originalPrice) : '');
+      const [discountedPrice, setDiscountedPrice] = useState(data?.discountedPrice ? String(data?.discountedPrice) : '');
+      const [meetingLink, setMeetingLink] = useState(data?.meetingLink ? data?.meetingLink : '');
+      const [bannerImage, setBannerImage] = useState(data?.bannerImage ? data?.bannerImage : '');
       const [saving, setSaving] = useState(false);
       const alert = useAlert();
 
-      const onSchedule = (webinar: any) => {
-            const response = scheduleWebinar(webinar);
+      const onSchedule = async (webinar: any) => {
+            if (isEdit) {
+                  const response = await editWebinar(webinar);
+            } else {
+                  const response = await scheduleWebinar(webinar);
+            }
 
       }
 
@@ -313,7 +319,8 @@ const ScheduleWebinarForm: React.FC<ScheduleWebinarFormProps> = ({ navigation })
 //       onSchedule?: (payload: ScheduleWebinarPayload) => Promise<void> | void;
 // }
 
-const ScheduleWebinarScreen = ({ navigation }: ScheduleWebinarScreenProps) => {
+const ScheduleWebinarScreen = ({ navigation, route }: ScheduleWebinarScreenProps) => {
+      const { webinar, isEditing } = route.params;
       const onSchedule = () => { }
       return (
             <KeyboardAvoidingView
@@ -327,7 +334,7 @@ const ScheduleWebinarScreen = ({ navigation }: ScheduleWebinarScreenProps) => {
                         showsVerticalScrollIndicator={false}
                         keyboardShouldPersistTaps="handled"
                   >
-                        <ScheduleWebinarForm navigation={navigation} />
+                        <ScheduleWebinarForm navigation={navigation} data={webinar} isEdit={isEditing} />
                   </ScrollView>
             </KeyboardAvoidingView>
       );

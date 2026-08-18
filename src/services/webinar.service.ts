@@ -1,4 +1,4 @@
-import { publicClient } from '../services/apiClients';
+import { publicClient, privateClient } from '../services/apiClients';
 
 export const liveWebinar = async () => {
       try {
@@ -18,6 +18,17 @@ export const liveZoomLinks = async () => {
             return response.data;
       } catch (error) {
             console.log('Error in getting live zoom links');
+            throw error;
+      }
+}
+
+export const getWebinars = async () => {
+      try {
+            const response = await privateClient.get('webinars');
+            console.log('Live webinars data:', response);
+            return response.data;
+      } catch (error) {
+            console.log('Error in fetching live webinars:', error);
             throw error;
       }
 }

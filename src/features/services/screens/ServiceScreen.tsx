@@ -1,5 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet, StatusBar } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../types/RootStackParamList';
 import { COLORS } from '../../../theme/theme';
 
 import ProgramsHeroSection from '../components/ProgramsHeroSection';
@@ -16,11 +18,14 @@ type ServicesScreenProp = NativeBottomTabScreenProps<MainTabParamList, 'Services
 // }
 
 const ServicesScreen = ({ navigation }: ServicesScreenProp) => {
+      const rootNav = navigation.getParent<NativeStackNavigationProp<RootStackParamList>>();
       const onBookFreeTrial = () => {
             console.log('Book Free Trial button pressed');
+            rootNav.navigate('Contact');
       }
       const onEnquireBlueprint = (blueprintId: string) => {
             console.log(`Enquire about blueprint: ${blueprintId}`);
+            rootNav.navigate('Contact');
       }
       return (
             <>

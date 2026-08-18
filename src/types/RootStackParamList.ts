@@ -3,6 +3,7 @@ import { TrainerTabParamList } from "./TrainerTabParamList";
 import { UserTabParamList } from "./UserTabParamList";
 import { MainTabParamList } from "./MainTabParamList";
 import { Client } from "../features/clientDirectory/types/clientDirectory";
+import { Webinar } from "../features/webinar/types/webinar";
 
 export type RootStackParamList = {
       Splash: undefined;
@@ -16,8 +17,15 @@ export type RootStackParamList = {
             joinedDate: any
       };
       Subscription: undefined;
-      ScheduleWebinar: undefined;
+      ScheduleWebinar: {
+            isEditing: boolean;
+            webinar?: Webinar;
+      };
       ClientDetail: {
             client: Client;
+      }
+      Contact: undefined;
+      EditProfile: {
+            profile: any;
       }
 }

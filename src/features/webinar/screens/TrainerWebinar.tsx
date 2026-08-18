@@ -185,6 +185,9 @@ const WebinarScreen = ({ navigation }: WebinarScreenProps) => {
                   Linking.openURL(webinar.meetingLink).catch(() => { });
             }
       };
+      const handelEdit = (data: Webinar) => {
+            navigation.navigate('ScheduleWebinar', { isEditing: true, webinar: data });
+      }
 
       return (
             <View style={styles.flex}>
@@ -208,7 +211,7 @@ const WebinarScreen = ({ navigation }: WebinarScreenProps) => {
                                     <View style={styles.header}>
                                           <Text style={{ color: COLORS.text }}>Create virtual interactions</Text>
                                           <Pressable style={{ flex: 1, flexDirection: 'row', backgroundColor: COLORS.primary, borderRadius: 10, paddingHorizontal: 5, paddingVertical: 4, gap: 5, justifyContent: 'space-between', alignItems: 'center' }}
-                                                onPress={() => { navigation.navigate('ScheduleWebinar') }}>
+                                                onPress={() => { navigation.navigate('ScheduleWebinar', { isEditing: false }) }}>
                                                 <Icon name='add-circle-outline' size={16} color={COLORS.text} />
                                                 <Text style={{ color: COLORS.text, }}>
                                                       Schedule
@@ -228,7 +231,7 @@ const WebinarScreen = ({ navigation }: WebinarScreenProps) => {
                         }
                         renderItem={({ item }) => (
                               <View style={styles.cardWrap}>
-                                    <WebinarCard webinar={item} onPressCta={handleCta} role='trainer' />
+                                    <WebinarCard webinar={item} onPressCta={handleCta} role='trainer' onEdit={() => { handelEdit(item) }} />
                               </View>
                         )}
                         ListEmptyComponent={

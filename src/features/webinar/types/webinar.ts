@@ -12,7 +12,7 @@ export interface Webinar {
   description: string;
   scheduleTime: string;
   trainer: Trainer;
-  participants: string[];
+  participants: Participants[];
   meetingLink: string;
   status: WebinarStatus;
   capacity: number;
@@ -21,6 +21,7 @@ export interface Webinar {
   originalPrice: number;
   createdAt: string;
   updatedAt: string;
+  isRegistered: boolean,
 }
 
 export interface WebinarResponse {
@@ -35,6 +36,17 @@ export interface Trainer {
   email: string;
   phone: string;
   specialization: string[];
+}
+
+export interface Participants {
+  _id: string,
+  name: string,
+  email: string,
+  phone: string,
+  profileImage: string,
+  status: string,
+  fitnessGoal: string,
+  role: string,
 }
 
 export type WebinarFilter = 'all' | WebinarStatus

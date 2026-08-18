@@ -18,7 +18,7 @@ import EmptyWebinarState from '../../../components/EmptyWebinarState';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
 import { MainTabParamList } from '../../../types/MainTabParamList';
-import { liveWebinar } from '../../../services/webinar.service';
+import { liveWebinar, getWebinars } from '../../../services/webinar.service';
 import { useAlert } from '../../../context/AlertContext';
 import { RootStackParamList } from '../../../types/RootStackParamList';
 import { NativeStackNavigationProp, } from '@react-navigation/native-stack';
@@ -30,6 +30,7 @@ import RazorpayCheckout, {
       SuccessResponse,
       ErrorResponse,
 } from 'react-native-razorpay';
+import { verifyPayment } from '../../../services/client.service';
 
 interface SectionBadgeProps {
       label: string;
@@ -104,7 +105,7 @@ const WebinarScreen = ({ navigation }: WebinarScreenProps) => {
       const rootNav = navigation.getParent<NativeStackNavigationProp<RootStackParamList>>();
       const alert = useAlert();
       const [filter, setFilter] = useState<WebinarFilter>('all');
-      const [webinars, setWebinar] = useState<Webinar[]>([]);
+      const [webinars, setWebinars] = useState<Webinar[]>([]);
       const [loading, setLoading] = useState(false);
       const [refreshing, setrefreshing] = useState(false);
       const { isAuthenticated, user } = useAuthStore();
@@ -124,10 +125,20 @@ const WebinarScreen = ({ navigation }: WebinarScreenProps) => {
 
       const fetchlivewebinar = async () => {
             try {
-                  const response = await liveWebinar();
-                  const webinarData = response.data ? response.data : [];
-                  console.log('Live webinar data:', webinarData);
-                  setWebinar(webinarData);
+                  if (isAuthenticated) {
+                        const response = await getWebinars();
+                        const webinarData = response.data ? response.data : [];
+                        setWebinars(webinarData);
+                  } else {
+                        const response = await liveWebinar();
+                        const webinarData = response.data ? response.data : [];
+                        console.log('Live webinar data:', webinarData);
+                        setWebinars(webinarData);
+                  }
+                  // const response = await liveWebinar();
+                  // const webinarData = response.data ? response.data : [];
+                  // console.log('Live webinar data:', webinarData);
+                  // setWebinar(webinarData);
             } catch (error) {
                   console.log('Error in getting webinar data', error);
                   // throw error;
@@ -180,49 +191,63 @@ const WebinarScreen = ({ navigation }: WebinarScreenProps) => {
       }, [webinars, filter]);
 
       //Razor Pay
-      const openRazorpayCheckout = async (data: Webinar) => {
-            const order = await privateClient.post(``);
-            console.log('order res:', order.data);
-            if (order === null) {
-                  alert.error('Failed',
-                        'Unable to create order. Please try again.')
+      const openRazorpayCheckout = async (webinar: Webinar) => {
+            try {
+                  const order = await privateClient.post(`webinars/${webinar._id}/payment/order`);
+                  console.log('order res:', order.data);
+                  if (order === null) {
+                        alert.error('Failed',
+                              'Unable to create order. Please try again.')
+                  }
+                  debugger
+                  const options: CheckoutOptions = {
+                        order_id: order.data?.orderId || '',
+                        description: `Payment for Webinar Register`,
+                        currency: 'INR',
+                        key: RAZORPAY_KEY,
+                        amount: Math.round(webinar.discountedPrice * 100), // Razorpay expects amount in paise
+                        name: 'FitIndia',
+                        prefill: {
+                              name: user?.name || '',
+                              email: user?.email || '',
+                              contact: user?.phone || '',
+                        },
+                        theme: { color: COLORS.primary },
+                  };
+
+                  RazorpayCheckout.open(options)
+                        .then(async (data: SuccessResponse) => {
+                              if (data) {
+                                    try {
+                                          const payload = data;
+                                          const res = await verifyPayment(webinar._id, payload);
+                                          console.log('verification res:', res);
+                                          if (res?.success) {
+                                                alert.success('Payment Successful');
+                                                onRefresh();
+                                          }
+                                    } catch (error: any) {
+                                          console.log('Error,', error?.data?.message);
+                                    }
+                              }
+
+                        })
+                        .catch((error: ErrorResponse) => {
+                              if (error) {
+                                    alert.error('Something went wrong', 'Please try again latter');
+                                    console.log('error:', error);
+                              } else {
+                                    alert.error('Payment Failed', 'Something went wrong');
+                              }
+                        });
+            } catch (error: any) {
+                  console.log('data message:', error?.data?.message);
+                  alert.error(error?.data?.message || 'Something went wrong');
             }
-            debugger
-            const options: CheckoutOptions = {
-                  order_id: order.data?.orderId || '',
-                  description: `Payment for Webinar Register`,
-                  currency: 'INR',
-                  key: RAZORPAY_KEY,
-                  amount: Math.round(data.discountedPrice * 100), // Razorpay expects amount in paise
-                  name: 'FitIndia',
-                  prefill: {
-                        name: user?.name || '',
-                        email: user?.email || '',
-                        contact: user?.phone || '',
-                  },
-                  theme: { color: COLORS.primary },
-            };
-
-            RazorpayCheckout.open(options)
-                  .then((data: SuccessResponse) => {
-                        if (data) {
-                              alert.success('Payment Successful');
-                              setispaid(true);
-                        }
-
-                  })
-                  .catch((error: ErrorResponse) => {
-                        if (error) {
-                              alert.error('Something went wrong', 'Please try again latter');
-                              console.log('error:', error);
-                        } else {
-                              alert.error('Payment Failed', 'Something went wrong');
-                        }
-                  });
       };
 
       const handleCta = async (webinar: Webinar) => {
-            if (ispaid) {
+            if (webinar.isRegistered) {
                   Linking.openURL(webinar.meetingLink).catch(() => { });
             } else {
                   await openRazorpayCheckout(webinar);

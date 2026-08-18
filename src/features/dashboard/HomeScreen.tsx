@@ -68,14 +68,17 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
 
       const onExplorePrograms = () => {
             console.log("Explore Programs pressed");
+            navigation.navigate('Services');
       };
 
       const onBookConsultation = () => {
             console.log("Book Consultation pressed");
+            navigation.navigate('Contact');
       };
 
       const onExploreAllServices = () => {
             console.log("Explore All Services pressed");
+            navigation.navigate('Services');
       };
 
       const onReadFounderStory = () => {
@@ -84,6 +87,7 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
 
       const onGetFreeConsultation = () => {
             console.log("Get Free Consultation pressed");
+            navigation.navigate('Contact');
       };
       return (
             <>

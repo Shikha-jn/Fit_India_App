@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, StatusBar, View, Pressable, Image, Text, Linking } from 'react-native';
 import { LinearGradient } from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -9,6 +9,10 @@ import { COLORS, TYPOGRAPHY, SPACING, RADII } from '../../../theme/theme';
 import { Client, WorkoutPlan, DietPlan } from '../types/clientDirectory';
 import { calculateBmi, getPlanExpiryInfo, formatLongDate } from '../../../profile/components/health';
 import { getClientProgress } from '../../../services/trainer.service';
+import EditWorkoutPlanModal from '../modals/WorkoutPlanModal';
+import EditDietPlanModal from '../modals/DietPlanModal';
+import { editWorkoutPlan, editDietPlan } from '../../../services/trainer.service';
+import { useAlert } from '../../../context/AlertContext';
 
 type ClientDetailScreenProps = NativeStackScreenProps<RootStackParamList, 'ClientDetail'>;
 
@@ -368,17 +372,36 @@ const DietPlanCard: React.FC<DietPlanCardProps> = ({ dietPlan, onManage }) => (
 
 const ClientDetailScreen = ({ navigation, route }: ClientDetailScreenProps) => {
       const { client } = route.params;
-      useEffect(() => {
+      const [workoutmodal, setworkoutmodal] = useState(false);
+      const [dietmodal, setDietmodal] = useState(false);
+      const alert = useAlert();
+      // useEffect(() => {
 
-      }, [])
+      // }, [])
       const fetchClientProgress = async () => {
             const response = await getClientProgress(client._id);
       }
       const onBack = () => {
             navigation.goBack();
       }
-      const onManageWorkoutPlan = () => { }
-      const onManageDietPlan = () => { }
+      const onManageWorkoutPlan = () => { setworkoutmodal(true); }
+      const onManageDietPlan = () => { setDietmodal(true); }
+      const saveworkoutPlan = async (plan: WorkoutPlan[]) => {
+            const res = await editWorkoutPlan(client._id, plan);
+            if (res.success) {
+                  alert.success('Workout plan updated');
+            } else {
+                  alert.error('Workout plan not updated', 'Please try again latter');
+            }
+      }
+      const saveDietPlan = async (plan: DietPlan[]) => {
+            const res = await editDietPlan(client._id, plan);
+            if (res.success) {
+                  alert.success('Diet plan updated');
+            } else {
+                  alert.error('Diet plan not updated', 'Please try again latter');
+            }
+      }
       return (
             <>
                   <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
@@ -398,6 +421,18 @@ const ClientDetailScreen = ({ navigation, route }: ClientDetailScreenProps) => {
                         />
                         <DietPlanCard dietPlan={client.dietPlan} onManage={onManageDietPlan} />
                   </ScrollView>
+                  <EditWorkoutPlanModal
+                        visible={workoutmodal}
+                        workoutPlan={client.workoutPlan}
+                        onClose={() => { setworkoutmodal(false) }}
+                        onSave={() => { saveworkoutPlan }}
+                  />
+                  <EditDietPlanModal
+                        dietPlan={client.dietPlan}
+                        visible={dietmodal}
+                        onSave={() => { saveDietPlan }}
+                        onClose={() => { setDietmodal(false) }}
+                  />
             </>
       );
 };

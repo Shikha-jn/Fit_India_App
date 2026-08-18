@@ -1,5 +1,6 @@
 import { privateClient, publicClient } from '../services/apiClients';
 import { Webinar } from '../features/webinar/types/webinar';
+import { DietPlan, WorkoutPlan } from '../features/clientDirectory/types/clientDirectory';
 
 export const trainerProfile = async () => {
       try {
@@ -67,7 +68,7 @@ export const getClientProgress = async (id: string) => {
       }
 }
 
-export const editWorkoutPlan = async (id: string, workout: string[]) => {
+export const editWorkoutPlan = async (id: string, workout: WorkoutPlan[]) => {
       try {
             const response = await privateClient.put(`trainers/clients/${id}/workout`, workout);
             console.log('Workout edited:', response);
@@ -78,7 +79,7 @@ export const editWorkoutPlan = async (id: string, workout: string[]) => {
       }
 }
 
-export const editDietPlan = async (id: string, diet: string[]) => {
+export const editDietPlan = async (id: string, diet: DietPlan[]) => {
       try {
             const response = await privateClient.put(`trainers/clients/${id}/diet`, diet);
             console.log('Diet plan edited:', response);
