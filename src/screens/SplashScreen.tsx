@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
+import { View, Text, StyleSheet, Animated, Easing, Image } from 'react-native';
 import { LinearGradient } from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { COLORS, SPACING, RADII, TYPOGRAPHY } from '../theme/theme';
@@ -136,7 +136,7 @@ const SplashScreen = ({ navigation }: SplashScreenProps) => {
                   ),
             );
             dotLoop.start();
-            
+
             const timer = setTimeout(() => {
                   handleNavigation();
             }, 4200);
@@ -148,10 +148,10 @@ const SplashScreen = ({ navigation }: SplashScreenProps) => {
 
       const startedAtRef = useRef(Date.now());
 
-      const handleNavigation  = async() => {
+      const handleNavigation = async () => {
             await loadAuth();
 
-            const {isAuthenticated, loggedInRole} = useAuthStore.getState();
+            const { isAuthenticated, loggedInRole } = useAuthStore.getState();
             if (!isAuthenticated) {
                   navigation.replace('MainTab', { screen: 'Home' });
                   return;
@@ -208,7 +208,8 @@ const SplashScreen = ({ navigation }: SplashScreenProps) => {
                                           end={{ x: 1, y: 1 }}
                                           style={styles.logoBadgeFill}
                                     >
-                                          <Icon name="pulse" size={38} color={COLORS.text} />
+                                          {/* <Icon name="pulse" size={38} color={COLORS.text} /> */}
+                                          <Image source={require('../assets/logo.jpeg')} style={{ height: 38, width: 38 }} />
                                     </LinearGradient>
                               </Animated.View>
                         </View>
